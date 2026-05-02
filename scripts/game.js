@@ -89,7 +89,11 @@ function main() {
 }
 
 function initGame() {
-    score = 0; gameOver = false;
+    score = 0; 
+    gameOver = false;
+    frames = 0;           // FIX 1: Initialize frames so math works!
+    speed = getSpeed();   // FIX 2: Pull the player's saved speed
+
     grid.init(EMPTY, WIDTH, HEIGHT);
     var sp = {x:Math.floor(WIDTH/2), y:HEIGHT-1};
     snake.init(UP, sp.x, sp.y);
