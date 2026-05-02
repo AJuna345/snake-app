@@ -46,13 +46,13 @@ body.theme-garfield {
     --button-text-color: #000000;  /* Black text for buttons */
 }
 
-/* Specific fix for HUD score visibility in Garfield mode */
-body.theme-garfield #hudScoreDisplay {
+/* Specific fix for HUD score & powerup visibility in Garfield mode */
+body.theme-garfield #hudScoreDisplay,
+body.theme-garfield #hudPowerupDisplay {
     color: var(--snake-color) !important;
     text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
 }
 
-/* --- Global Styles --- */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
