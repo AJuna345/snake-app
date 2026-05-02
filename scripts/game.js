@@ -92,17 +92,17 @@ function spawnPowerup() {
     }
 }
 
-// --- NEW FUNCTION: Show/Hide the HUD Power-up Text ---
+// --- FIXED: Toggle 'invisible' instead of 'd-none' to prevent layout shift ---
 function updatePowerupHUD(text) {
     const container = document.getElementById('powerupContainer');
     const display = document.getElementById('hudPowerupDisplay');
     if (container && display) {
         if (text) {
             display.innerText = text;
-            container.classList.remove('d-none');
+            container.classList.remove('invisible');
         } else {
             display.innerText = "";
-            container.classList.add('d-none');
+            container.classList.add('invisible');
         }
     }
 }
@@ -249,8 +249,8 @@ function update() {
             
             setFood();
             
-            // 20% chance to drop a mystery powerup when eating
-            if (Math.random() < 0.20) spawnPowerup();
+            // INCREASED to 90% chance to drop a mystery powerup for testing
+            if (Math.random() < 0.90) spawnPowerup();
 
         } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
             // Picked up a Mystery Powerup
