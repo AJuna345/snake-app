@@ -10,7 +10,7 @@ import {
 } from './storage.js';
 
 var WIDTH = 26, HEIGHT = 26; // Width and height of the game board
-var EMPTY = 0, SNAKE = 1, FOOD = 2;
+var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
@@ -72,14 +72,12 @@ function setFood() {
 }
 
 function main() {
-    // Clear board container to prevent duplicate canvases on restart
     const board = document.getElementById("game-board");
     board.innerHTML = ""; 
     
     canvas = document.createElement("canvas");
     canvas.width = WIDTH*20; canvas.height = HEIGHT*20;
     
-    // --- Responsive Canvas Fix ---
     canvas.style.maxWidth = "100%";
     canvas.style.height = "auto";
     
@@ -94,7 +92,6 @@ function main() {
     loop();
 }
 
-// Helper function to update the High Score on the left HUD
 function updateHighScoreHUD() {
     const highScores = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
     const topScore = highScores.length > 0 ? highScores[0].score : 0;
@@ -102,30 +99,65 @@ function updateHighScoreHUD() {
     if (hudHighScore) hudHighScore.innerText = topScore;
 }
 
+// --- NEW FUNCTION: Random Wall Generator ---
+function generateRandomWalls(numWalls) {
+    // Determine where the snake starts so we don't box it in
+    var spawnX = Math.floor(WIDTH / 2);
+    var spawnY = HEIGHT - 1;
+
+    for (var i = 0; i < numWalls; i++) {
+        // Random length between 2 and 5
+        var length = Math.floor(Math.random() * 4) + 2; 
+        var isHorizontal = Math.random() < 0.5; // 50/50 chance for horizontal or vertical
+        
+        var startX = Math.floor(Math.random() * WIDTH);
+        var startY = Math.floor(Math.random() * HEIGHT);
+
+        // Adjust bounds if the random wall tries to draw outside the grid
+        if (isHorizontal && startX + length > WIDTH) startX = WIDTH - length;
+        if (!isHorizontal && startY + length > HEIGHT) startY = HEIGHT - length;
+
+        // Draw the individual blocks of the wall
+        for (var j = 0; j < length; j++) {
+            var wx = isHorizontal ? startX + j : startX;
+            var wy = isHorizontal ? startY : startY + j;
+            
+            // Only place a wall if the space is totally empty
+            if (grid.get(wx, wy) === EMPTY) {
+                // SAFE ZONE CHECK: Ensure we don't spawn a wall within a 4-block radius of the snake's start
+                if (Math.abs(wx - spawnX) < 4 && Math.abs(wy - spawnY) < 4) {
+                    continue; // Skip drawing this specific block to leave room to move
+                }
+                grid.set(WALL, wx, wy);
+            }
+        }
+    }
+}
+
 function initGame() {
     score = 0; 
     gameOver = false;
     frames = 0;           
     speed = getSpeed();   
-    changingDirection = false; // Reset lock on game start
+    changingDirection = false; 
 
-    // --- RESTORED MULTIPLIER LOGIC ---
-    if (speed >= 10) foodScore = 1;      // Slow
-    else if (speed >= 7) foodScore = 2;  // Normal
-    else if (speed >= 5) foodScore = 3;  // Fast
-    else foodScore = 5;                  // Insane
+    if (speed >= 10) foodScore = 1;      
+    else if (speed >= 7) foodScore = 2;  
+    else if (speed >= 5) foodScore = 3;  
+    else foodScore = 5;                  
 
     grid.init(EMPTY, WIDTH, HEIGHT);
     var sp = {x:Math.floor(WIDTH/2), y:HEIGHT-1};
     snake.init(UP, sp.x, sp.y);
     grid.set(SNAKE, sp.x, sp.y);
-    setFood();
     
-    // Ensure HUD score resets when starting a new game
+    // Call the new generator to spawn 6 random walls
+    generateRandomWalls(6); 
+    
+    setFood(); // Set food AFTER walls so food doesn't spawn inside a wall
+    
     const hudScore = document.getElementById("hudScoreDisplay");
     if (hudScore) hudScore.innerText = score;
-    
-    // Fetch and display latest high score dynamically
     updateHighScoreHUD();
 }
 
@@ -139,7 +171,6 @@ function loop() {
 function update() {
     frames++;
     
-    // Prevent multiple inputs from overriding the direction in a single movement frame
     if (!changingDirection) {
         if (keystate[KEY_LEFT] && snake.direction !== RIGHT) { snake.direction = LEFT; changingDirection = true; }
         else if (keystate[KEY_UP] && snake.direction !== DOWN) { snake.direction = UP; changingDirection = true; }
@@ -156,7 +187,8 @@ function update() {
             case DOWN:  ny++; break;
         }
 
-        if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE) {
+        // Check for wall collisions in addition to out-of-bounds and self-collisions
+        if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE || grid.get(nx, ny) === WALL) {
             gameOver = true;
             saveHighScore(getPlayerName(), score);
             document.getElementById("gameOverScreen").classList.remove("d-none");
@@ -176,7 +208,6 @@ function update() {
         grid.set(SNAKE, nx, ny);
         snake.insert(nx, ny);
         
-        // Unlock direction changes immediately AFTER the snake physically moves
         changingDirection = false;
     }
 }
@@ -234,6 +265,24 @@ function draw() {
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = contrastColor;
                 ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, 4);
+            } else if (val === WALL) {
+                // Draw Outlined Wall / Crate
+                ctx.shadowBlur = 0; 
+                ctx.fillStyle = canvasBg; 
+                ctx.fillRect(x*tw, y*th, tw, th); 
+                
+                // Outline
+                ctx.strokeStyle = borderColor; 
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
+                
+                // Inner structural "X"
+                ctx.beginPath();
+                ctx.moveTo(x*tw + 2, y*th + 2);
+                ctx.lineTo(x*tw + tw - 2, y*th + th - 2);
+                ctx.moveTo(x*tw + tw - 2, y*th + 2);
+                ctx.lineTo(x*tw + 2, y*th + th - 2);
+                ctx.stroke();
             }
         }
     }
@@ -252,14 +301,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const themeSelect = document.getElementById('themeSelect');
     const speedSelect = document.getElementById('speedSelect');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
-    
-    // New hook for the HUD Player Name
     const hudPlayerName = document.getElementById('hudPlayerName');
 
     let initialTheme = getTheme();
     let settingsSaved = false;
 
-    // Initialize UI values
     const currentPlayerName = getPlayerName() || "Guest";
     if (nameInput) nameInput.value = currentPlayerName;
     if (hudPlayerName) hudPlayerName.innerText = currentPlayerName;
@@ -283,7 +329,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Mobile controls with direction lock logic applied
     if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN && !changingDirection) { snake.direction = UP; changingDirection = true; }});
     if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP && !changingDirection) { snake.direction = DOWN; changingDirection = true; }});
     if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT && !changingDirection) { snake.direction = LEFT; changingDirection = true; }});
@@ -321,7 +366,6 @@ document.addEventListener("DOMContentLoaded", function() {
             if (nameInput) {
                 const newName = nameInput.value || "Guest";
                 savePlayerName(newName);
-                // Update the HUD instantly
                 if (hudPlayerName) hudPlayerName.innerText = newName; 
             }
             
