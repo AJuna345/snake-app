@@ -9,7 +9,7 @@ import {
     saveHighScore
 } from './storage.js';
 
-var WIDTH = 26, HEIGHT = 26; // Width and height of the game board
+var WIDTH = 26, HEIGHT = 26; 
 var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3, SCORE2X = 4, NEWWALLS = 5, SLOWMO = 6;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
@@ -29,7 +29,6 @@ var canvasBg = "#ffffff";
 var textColor = "#333333";
 var borderColor = "#333333"; 
 
-// Get the CSS theme colors
 function updateThemeColors() {
     const computedStyle = getComputedStyle(document.body);
     snakeColor = computedStyle.getPropertyValue('--snake-color').trim() || "#28a745";
@@ -38,7 +37,6 @@ function updateThemeColors() {
     borderColor = computedStyle.getPropertyValue('--border-color').trim() || "#333333";
 }
 
-// Create the gameboard grid
 var grid = {
     width: null, height: null, _grid: null,
     init: function(d, c, r) {
@@ -87,12 +85,11 @@ function spawnPowerup() {
     }
     if (empty.length > 0) {
         var randpos = empty[Math.floor(Math.random()*empty.length)];
-        var pType = Math.floor(Math.random() * 3) + 4; // Picks 4, 5, or 6
+        var pType = Math.floor(Math.random() * 3) + 4; 
         grid.set(pType, randpos.x, randpos.y);
     }
 }
 
-// --- FIXED: Toggle 'invisible' instead of 'd-none' to prevent layout shift ---
 function updatePowerupHUD(text) {
     const container = document.getElementById('powerupContainer');
     const display = document.getElementById('hudPowerupDisplay');
@@ -116,6 +113,8 @@ function main() {
     
     canvas.style.maxWidth = "100%";
     canvas.style.height = "auto";
+    // Adding touch-action none prevents the browser from scrolling when tapping the canvas
+    canvas.style.touchAction = "none"; 
     
     ctx = canvas.getContext("2d");
     board.appendChild(canvas);
@@ -123,6 +122,42 @@ function main() {
     keystate = {};
     document.addEventListener("keydown", function(evt) { keystate[evt.keyCode] = true; });
     document.addEventListener("keyup", function(evt) { delete keystate[evt.keyCode]; });
+    
+    // --- NEW RELATIVE TAP CONTROLS ---
+    canvas.addEventListener("pointerdown", function(e) {
+        // Prevent logic from firing if game is over or hasn't started yet
+        if (gameOver || snake.last === null) return;
+        if (changingDirection) return; // Prevent double-turn suicide bug
+
+        const rect = canvas.getBoundingClientRect();
+        
+        // Find exact coordinates of the click relative to the canvas sizing
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+        const clickX = (e.clientX - rect.left) * scaleX;
+        const clickY = (e.clientY - rect.top) * scaleY;
+
+        // Find exact center coordinates of the snake's head
+        const tw = canvas.width / grid.width;
+        const th = canvas.height / grid.height;
+        const headX = (snake.last.x * tw) + (tw / 2);
+        const headY = (snake.last.y * th) + (th / 2);
+
+        // Calculate distance between click and snake head
+        const dx = clickX - headX;
+        const dy = clickY - headY;
+
+        // Determine which direction was intended based on the larger distance
+        if (Math.abs(dx) > Math.abs(dy)) {
+            // It's a horizontal tap
+            if (dx > 0 && snake.direction !== LEFT) { snake.direction = RIGHT; changingDirection = true; }
+            else if (dx < 0 && snake.direction !== RIGHT) { snake.direction = LEFT; changingDirection = true; }
+        } else {
+            // It's a vertical tap
+            if (dy > 0 && snake.direction !== UP) { snake.direction = DOWN; changingDirection = true; }
+            else if (dy < 0 && snake.direction !== DOWN) { snake.direction = UP; changingDirection = true; }
+        }
+    });
     
     initGame();
     loop();
@@ -174,7 +209,7 @@ function initGame() {
     activePowerup = null;
     powerupTimer = 0;
     
-    updatePowerupHUD(null); // Ensure the HUD is clear on new game
+    updatePowerupHUD(null); 
 
     if (baseSpeed >= 10) foodScore = 1;      
     else if (baseSpeed >= 7) foodScore = 2;  
@@ -204,13 +239,11 @@ function loop() {
 function update() {
     frames++;
     
-    // Process active powerup timers
     if (powerupTimer > 0) {
         powerupTimer--;
         if (powerupTimer === 0) {
-            // Timer ran out: Reset state and clear the HUD text
             activePowerup = null;
-            speed = baseSpeed; // Ends SLOWMO
+            speed = baseSpeed; 
             updatePowerupHUD(null); 
         }
     }
@@ -242,31 +275,28 @@ function update() {
         let targetVal = grid.get(nx, ny);
 
         if (targetVal === FOOD) {
-            // Apply 2X Score Multiplier if active
             score += (activePowerup === SCORE2X) ? (foodScore * 2) : foodScore;
             const hudScore = document.getElementById("hudScoreDisplay");
             if (hudScore) hudScore.innerText = score; 
             
             setFood();
             
-            // INCREASED to 90% chance to drop a mystery powerup for testing
             if (Math.random() < 0.90) spawnPowerup();
 
         } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
-            // Picked up a Mystery Powerup
             if (targetVal === SCORE2X) {
                 activePowerup = SCORE2X;
-                powerupTimer = 600; // 10 seconds
+                powerupTimer = 600; 
                 updatePowerupHUD("Double Score!");
             } else if (targetVal === NEWWALLS) {
-                generateRandomWalls(2); // Instantly drop 2 new walls
+                generateRandomWalls(2); 
                 activePowerup = NEWWALLS;
-                powerupTimer = 600; // Display text for 10 seconds
+                powerupTimer = 600; 
                 updatePowerupHUD("New Walls!?!");
             } else if (targetVal === SLOWMO) {
                 activePowerup = SLOWMO;
-                powerupTimer = 600; // 10 seconds
-                speed = baseSpeed + 4; // Slows the snake down
+                powerupTimer = 600; 
+                speed = baseSpeed + 4; 
                 updatePowerupHUD("Slow Mo");
             }
             
@@ -378,10 +408,6 @@ function draw() {
 document.addEventListener("DOMContentLoaded", function() {
     const startBtn = document.getElementById("startBtn");
     const restartBtn = document.getElementById("restartBtn");
-    const upBtn = document.getElementById("upBtn");
-    const downBtn = document.getElementById("downBtn");
-    const leftBtn = document.getElementById("leftBtn");
-    const rightBtn = document.getElementById("rightBtn");
 
     const settingsModal = document.getElementById('settingsModal');
     const nameInput = document.getElementById('playerNameInput');
@@ -415,11 +441,6 @@ document.addEventListener("DOMContentLoaded", function() {
             loop(); 
         });
     }
-
-    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN && !changingDirection) { snake.direction = UP; changingDirection = true; }});
-    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP && !changingDirection) { snake.direction = DOWN; changingDirection = true; }});
-    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT && !changingDirection) { snake.direction = LEFT; changingDirection = true; }});
-    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT && !changingDirection) { snake.direction = RIGHT; changingDirection = true; }});
 
     if (settingsModal) {
         settingsModal.addEventListener('show.bs.modal', function () {
