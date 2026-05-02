@@ -9,36 +9,32 @@ import {
     saveHighScore
 } from './storage.js';
 
-var WIDTH = 26, HEIGHT = 26; 
+var WIDTH = 26, HEIGHT = 26; // Width and height of the game board
 var EMPTY = 0, SNAKE = 1, FOOD = 2;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
-var speed = 7; 
-var foodScore = 1; 
+var speed = 7; // Default speed (Normal)
+var foodScore = 1; // Increase scores with higher difficulty levels/speeds
 var gameStarted = false;
 var animationStarted = false;
-
-// PNG Asset Loading
-var headImg = new Image();
-headImg.src = "images/snake-head.png";
-var bodyImg = new Image();
-bodyImg.src = "images/snake-body.png";
-var foodImg = new Image();
-foodImg.src = "images/food.png";
 
 // Default Theme Colors
 var snakeColor = "#28a745";
 var canvasBg = "#ffffff";
 var textColor = "#333333";
+var borderColor = "#333333"; // Added to use for food color
 
+// Get the CSS theme colors to make the game match the selected theme
 function updateThemeColors() {
     const computedStyle = getComputedStyle(document.body);
     snakeColor = computedStyle.getPropertyValue('--snake-color').trim() || "#28a745";
     canvasBg = computedStyle.getPropertyValue('--canvas-bg').trim() || "#ffffff";
     textColor = computedStyle.getPropertyValue('--text-color').trim() || "#333333";
+    borderColor = computedStyle.getPropertyValue('--border-color').trim() || "#333333";
 }
 
+// Create the gameboard grid
 var grid = {
     width: null, height: null, _grid: null,
     init: function(d, c, r) {
@@ -98,6 +94,7 @@ function initGame() {
 }
 
 function loop() {
+    updateThemeColors(); // Ensure colors update if theme changes mid-game
     update();
     draw();
     if (!gameOver) { window.requestAnimationFrame(loop, canvas); }
@@ -143,39 +140,119 @@ function draw() {
     var tw = canvas.width/grid.width;
     var th = canvas.height/grid.height;
 
+    // Helper to determine contrast color for eyes/stems based on background
+    var contrastColor = canvasBg === "#ffffff" ? "#000000" : "#ffffff";
+
     for (var x=0; x < grid.width; x++) {
         for (var y=0; y < grid.height; y++) {
             var val = grid.get(x, y);
             
             // Draw Background Tiles
+            ctx.shadowBlur = 0; // Reset shadow for background
             ctx.fillStyle = canvasBg;
             ctx.fillRect(x*tw, y*th, tw, th);
 
             if (val === SNAKE) {
                 if (x === snake.last.x && y === snake.last.y) {
-                    // Draw Head with Rotation logic
-                    ctx.save();
-                    ctx.translate(x*tw + tw/2, y*th + th/2);
+                    // Draw Neon Tech Snake Head
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = snakeColor;
+                    ctx.fillStyle = snakeColor;
+                    ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                     
-                    if (snake.direction === UP) ctx.rotate(0);
-                    else if (snake.direction === DOWN) ctx.rotate(Math.PI);
-                    else if (snake.direction === LEFT) ctx.rotate(-Math.PI/2);
-                    else if (snake.direction === RIGHT) ctx.rotate(Math.PI/2);
-                    
-                    ctx.drawImage(headImg, -tw/2, -th/2, tw, th);
-                    ctx.restore();
+                    // Draw Glowing Eyes based on direction
+                    ctx.shadowBlur = 5;
+                    ctx.fillStyle = contrastColor;
+                    if (snake.direction === UP || snake.direction === DOWN) {
+                        ctx.fillRect(x*tw + 4, y*th + th/2 - 2, 4, 4); // Left eye
+                        ctx.fillRect(x*tw + tw - 8, y*th + th/2 - 2, 4, 4); // Right eye
+                    } else {
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + 4, 4, 4); // Top eye
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + th - 8, 4, 4); // Bottom eye
+                    }
                 } else {
-                    // Draw Body segments
-                    ctx.drawImage(bodyImg, x*tw, y*th, tw, th);
+                    // Draw Neon Tech Body Segment
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = snakeColor;
+                    ctx.fillStyle = snakeColor;
+                    ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
+                    
+                    // Internal Digital Grid Lines (cutout using background color)
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = canvasBg;
+                    ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, th - 4); // Vertical line
+                    ctx.fillRect(x*tw + 2, y*th + th/2 - 1, tw - 4, 2); // Horizontal line
                 }
             } else if (val === FOOD) {
-                // Draw Food/Fruit
-                ctx.drawImage(foodImg, x*tw, y*th, tw, th);
+                // Draw Neon Apple (Food) using the border color
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = borderColor;
+                ctx.fillStyle = borderColor;
+                
+                // Apple body (circle)
+                ctx.beginPath();
+                ctx.arc(x*tw + tw/2, y*th + th/2 + 2, tw/2 - 4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                // Apple Stem
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = contrastColor;
+                ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, 4);
             }
         }
     }
     
+    // Draw Score (Reset shadows so text is readable)
+    ctx.shadowBlur = 0;
     ctx.fillStyle = textColor;
     ctx.font = "14px DotGothic16";
     ctx.fillText("SCORE: " + score, 10, canvas.height - 10);
 }
+
+document.addEventListener("DOMContentLoaded", function() {
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+    const upBtn = document.getElementById("upBtn");
+    const downBtn = document.getElementById("downBtn");
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+
+    console.log("Hint: If you hate Mondays, try Garfield as your name.");
+
+    if (startBtn) {
+        startBtn.addEventListener("click", function() {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("game-section").classList.remove("hidden");
+            main(); 
+        });
+    }
+
+    if (restartBtn) {
+        restartBtn.addEventListener("click", function() {
+            document.getElementById("gameOverScreen").classList.add("hidden"); 
+            initGame(); 
+        });
+    }
+
+    // Added mobile keyboard touch controls to fix game on phones and tablets
+    if (upBtn) {
+        upBtn.addEventListener("click", function() {
+            if (snake.direction !== DOWN) snake.direction = UP;
+        });
+    }
+    if (downBtn) {
+        downBtn.addEventListener("click", function() {
+            if (snake.direction !== UP) snake.direction = DOWN;
+        });
+    }
+    if (leftBtn) {
+        leftBtn.addEventListener("click", function() {
+            if (snake.direction !== RIGHT) snake.direction = LEFT;
+        });
+    }
+    if (rightBtn) {
+        rightBtn.addEventListener("click", function() {
+            if (snake.direction !== LEFT) snake.direction = RIGHT;
+        });
+    }
+});
