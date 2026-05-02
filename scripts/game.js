@@ -21,7 +21,7 @@ var foodScore = 1; // Increase scores with higher difficulty levels/speeds
 var snakeColor = "#28a745";
 var canvasBg = "#ffffff";
 var textColor = "#333333";
-var borderColor = "#333333"; // Added to use for food color
+var borderColor = "#333333"; // Used for food color
 
 // Get the CSS theme colors to make the game match the selected theme
 function updateThemeColors() {
@@ -91,8 +91,8 @@ function main() {
 function initGame() {
     score = 0; 
     gameOver = false;
-    frames = 0;           // FIX 1: Initialize frames so math works!
-    speed = getSpeed();   // FIX 2: Pull the player's saved speed
+    frames = 0;           // Initialize frames so speed math works
+    speed = getSpeed();   // Pull the player's saved speed setting
 
     grid.init(EMPTY, WIDTH, HEIGHT);
     var sp = {x:Math.floor(WIDTH/2), y:HEIGHT-1};
@@ -101,7 +101,8 @@ function initGame() {
     setFood();
     
     // Ensure HUD score resets when starting a new game
-    document.getElementById("hudScoreDisplay").innerText = score;
+    const hudScore = document.getElementById("hudScoreDisplay");
+    if (hudScore) hudScore.innerText = score;
 }
 
 function loop() {
@@ -127,6 +128,7 @@ function update() {
             case DOWN:  ny++; break;
         }
 
+        // Collision detection (Walls or self)
         if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE) {
             gameOver = true;
             saveHighScore(getPlayerName(), score);
@@ -136,9 +138,11 @@ function update() {
             return;
         }
 
+        // Eating food
         if (grid.get(nx, ny) === FOOD) {
             score += foodScore;
-            document.getElementById("hudScoreDisplay").innerText = score; // Update left-hand HUD
+            const hudScore = document.getElementById("hudScoreDisplay");
+            if (hudScore) hudScore.innerText = score; // Update left-hand HUD
             setFood();
         } else {
             var tail = snake.remove();
@@ -216,6 +220,7 @@ function draw() {
     }
 }
 
+// DOM Interaction and Event Listeners
 document.addEventListener("DOMContentLoaded", function() {
     const startBtn = document.getElementById("startBtn");
     const restartBtn = document.getElementById("restartBtn");
@@ -226,50 +231,67 @@ document.addEventListener("DOMContentLoaded", function() {
 
     console.log("Hint: If you hate Mondays, try Garfield as your name.");
 
+    // Start Game logic
     if (startBtn) {
         startBtn.addEventListener("click", function() {
-            // Hide the Start Screen using Bootstrap's d-none class
             document.getElementById("startScreen").classList.add("d-none");
             
             // Swap the buttons in the HUD
             startBtn.classList.add("d-none");
-            restartBtn.classList.remove("hidden");
+            restartBtn.classList.remove("hidden"); // Remove old hidden class if present
             restartBtn.classList.remove("d-none");
             
-            // Start the game loop
             main(); 
         });
     }
 
+    // Restart Game logic
     if (restartBtn) {
         restartBtn.addEventListener("click", function() {
-            // Hide the Game Over Screen
             document.getElementById("gameOverScreen").classList.add("d-none"); 
-            
-            // Re-initialize the game variables
             initGame(); 
+            loop(); // Restart the animation engine loop
         });
     }
 
     // Mobile keyboard touch controls
-    if (upBtn) {
-        upBtn.addEventListener("click", function() {
-            if (snake.direction !== DOWN) snake.direction = UP;
-        });
-    }
-    if (downBtn) {
-        downBtn.addEventListener("click", function() {
-            if (snake.direction !== UP) snake.direction = DOWN;
-        });
-    }
-    if (leftBtn) {
-        leftBtn.addEventListener("click", function() {
-            if (snake.direction !== RIGHT) snake.direction = LEFT;
-        });
-    }
-    if (rightBtn) {
-        rightBtn.addEventListener("click", function() {
-            if (snake.direction !== LEFT) snake.direction = RIGHT;
+    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN) snake.direction = UP; });
+    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP) snake.direction = DOWN; });
+    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT) snake.direction = LEFT; });
+    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT) snake.direction = RIGHT; });
+
+    // --- Settings UI Wiring ---
+    const nameInput = document.getElementById('playerNameInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const speedSelect = document.getElementById('speedSelect');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+
+    // Load current settings into the modal inputs when the page loads
+    if (nameInput) nameInput.value = getPlayerName();
+    if (themeSelect) themeSelect.value = getTheme();
+    if (speedSelect) speedSelect.value = getSpeed();
+
+    // Only apply and save changes when the "Save Changes" button is clicked
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', function() {
+            if (nameInput) savePlayerName(nameInput.value);
+            
+            if (themeSelect) {
+                saveTheme(themeSelect.value);
+                // Immediately apply the new theme to the document body
+                document.body.className = `theme-${themeSelect.value}`;
+                
+                // Force the canvas to redraw with new colors immediately (even if paused/over)
+                updateThemeColors();
+                if (canvas && ctx) {
+                    draw();
+                }
+            }
+            
+            if (speedSelect) {
+                saveSpeed(speedSelect.value);
+                speed = parseInt(speedSelect.value); // Update live speed if playing
+            }
         });
     }
 });
