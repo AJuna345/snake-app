@@ -245,4 +245,278 @@ function initGame() {
 
 function loop() {
     updateThemeColors(); 
-    update
+    update();
+    draw();
+    if (!gameOver) { window.requestAnimationFrame(loop, canvas); }
+}
+
+function update() {
+    frames++;
+    
+    if (powerupTimer > 0) {
+        powerupTimer--;
+        if (powerupTimer === 0) {
+            activePowerup = null;
+            speed = baseSpeed; 
+            updatePowerupHUD(null); 
+        }
+    }
+    
+    if (!changingDirection) {
+        if (keystate[KEY_LEFT] && snake.direction !== RIGHT) { snake.direction = LEFT; changingDirection = true; }
+        else if (keystate[KEY_UP] && snake.direction !== DOWN) { snake.direction = UP; changingDirection = true; }
+        else if (keystate[KEY_RIGHT] && snake.direction !== LEFT) { snake.direction = RIGHT; changingDirection = true; }
+        else if (keystate[KEY_DOWN] && snake.direction !== UP) { snake.direction = DOWN; changingDirection = true; }
+    }
+
+    if (frames % speed === 0) {
+        var nx = snake.last.x; var ny = snake.last.y;
+        switch (snake.direction) {
+            case LEFT:  nx--; break;
+            case UP:    ny--; break;
+            case RIGHT: nx++; break;
+            case DOWN:  ny++; break;
+        }
+
+        if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE || grid.get(nx, ny) === WALL) {
+            gameOver = true;
+            saveHighScore(getPlayerName(), score);
+            document.getElementById("gameOverScreen").classList.remove("d-none");
+            document.getElementById("finalScore").innerText = score;
+            return;
+        }
+
+        let targetVal = grid.get(nx, ny);
+
+        if (targetVal === FOOD) {
+            score += (activePowerup === SCORE2X) ? (foodScore * 2) : foodScore;
+            const hudScore = document.getElementById("hudScoreDisplay");
+            if (hudScore) hudScore.innerText = score; 
+            
+            setFood();
+            
+            if (Math.random() < 0.90) spawnPowerup();
+
+        } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
+            if (targetVal === SCORE2X) {
+                activePowerup = SCORE2X;
+                powerupTimer = 600; 
+                updatePowerupHUD("Double Score!");
+            } else if (targetVal === NEWWALLS) {
+                generateRandomWalls(2); 
+                activePowerup = NEWWALLS;
+                powerupTimer = 600; 
+                updatePowerupHUD("New Walls!?!");
+            } else if (targetVal === SLOWMO) {
+                activePowerup = SLOWMO;
+                powerupTimer = 600; 
+                speed = baseSpeed + 4; 
+                updatePowerupHUD("Slow Mo");
+            }
+            
+            var tail = snake.remove();
+            grid.set(EMPTY, tail.x, tail.y);
+            
+        } else {
+            var tail = snake.remove();
+            grid.set(EMPTY, tail.x, tail.y);
+        }
+        
+        grid.set(SNAKE, nx, ny);
+        snake.insert(nx, ny);
+        
+        changingDirection = false;
+    }
+}
+
+function draw() {
+    var tw = canvas.width/grid.width;
+    var th = canvas.height/grid.height;
+
+    var contrastColor = canvasBg === "#ffffff" || canvasBg === "#ecf0f1" ? "#000000" : "#ffffff";
+
+    for (var x=0; x < grid.width; x++) {
+        for (var y=0; y < grid.height; y++) {
+            var val = grid.get(x, y);
+            
+            ctx.shadowBlur = 0; 
+            ctx.fillStyle = canvasBg;
+            ctx.fillRect(x*tw, y*th, tw, th);
+
+            if (val === SNAKE) {
+                if (x === snake.last.x && y === snake.last.y) {
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = snakeColor;
+                    ctx.fillStyle = snakeColor;
+                    ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
+                    
+                    ctx.shadowBlur = 5;
+                    ctx.fillStyle = contrastColor;
+                    if (snake.direction === UP || snake.direction === DOWN) {
+                        ctx.fillRect(x*tw + 4, y*th + th/2 - 2, 4, 4); 
+                        ctx.fillRect(x*tw + tw - 8, y*th + th/2 - 2, 4, 4); 
+                    } else {
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + 4, 4, 4); 
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + th - 8, 4, 4); 
+                    }
+                } else {
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = snakeColor;
+                    ctx.fillStyle = snakeColor;
+                    ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
+                    
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = canvasBg;
+                    ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, th - 4); 
+                    ctx.fillRect(x*tw + 2, y*th + th/2 - 1, tw - 4, 2); 
+                }
+            } else if (val === FOOD) {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = borderColor;
+                ctx.fillStyle = borderColor;
+                
+                ctx.beginPath();
+                ctx.arc(x*tw + tw/2, y*th + th/2 + 2, tw/2 - 4, 0, 2 * Math.PI);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = contrastColor;
+                ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, 4);
+                
+            } else if (val === WALL) {
+                ctx.shadowBlur = 0; 
+                ctx.fillStyle = canvasBg; 
+                ctx.fillRect(x*tw, y*th, tw, th); 
+                
+                ctx.strokeStyle = borderColor; 
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
+                
+                ctx.beginPath();
+                ctx.moveTo(x*tw + 2, y*th + 2);
+                ctx.lineTo(x*tw + tw - 2, y*th + th - 2);
+                ctx.moveTo(x*tw + tw - 2, y*th + 2);
+                ctx.lineTo(x*tw + 2, y*th + th - 2);
+                ctx.stroke();
+                
+            } else if (val >= SCORE2X && val <= SLOWMO) {
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = "#f1c40f"; 
+                ctx.fillStyle = "#f39c12";
+                
+                ctx.beginPath();
+                ctx.moveTo(x*tw + tw/2, y*th + 2);
+                ctx.lineTo(x*tw + tw - 2, y*th + th/2);
+                ctx.lineTo(x*tw + tw/2, y*th + th - 2);
+                ctx.lineTo(x*tw + 2, y*th + th/2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(x*tw + tw/2 - 2, y*th + th/2 - 2, 4, 4);
+            }
+        }
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    const startBtn = document.getElementById("startBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    const settingsModal = document.getElementById('settingsModal');
+    const nameInput = document.getElementById('playerNameInput');
+    const themeSelect = document.getElementById('themeSelect');
+    const speedSelect = document.getElementById('speedSelect');
+    const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    const hudPlayerName = document.getElementById('hudPlayerName');
+
+    let initialTheme = getTheme();
+    let settingsSaved = false;
+
+    const currentPlayerName = getPlayerName() || "Guest";
+    if (nameInput) nameInput.value = currentPlayerName;
+    if (hudPlayerName) hudPlayerName.innerText = currentPlayerName;
+    if (themeSelect) themeSelect.value = initialTheme;
+    if (speedSelect) speedSelect.value = getSpeed();
+
+    if (startBtn) {
+        startBtn.addEventListener("click", function() {
+            document.getElementById("startScreen").classList.add("d-none");
+            startBtn.classList.add("d-none");
+            restartBtn.classList.remove("d-none");
+            main(); 
+        });
+    }
+
+    if (restartBtn) {
+        restartBtn.addEventListener("click", function() {
+            document.getElementById("gameOverScreen").classList.add("d-none"); 
+            initGame(); 
+            loop(); 
+        });
+    }
+
+    if (settingsModal) {
+        settingsModal.addEventListener('show.bs.modal', function () {
+            initialTheme = getTheme();
+            settingsSaved = false;
+        });
+
+        settingsModal.addEventListener('hide.bs.modal', function () {
+            if (!settingsSaved) {
+                document.body.className = `theme-${initialTheme}`;
+                themeSelect.value = initialTheme;
+                updateThemeColors();
+                if (canvas && ctx) draw();
+            }
+        });
+    }
+
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function(e) {
+            const previewTheme = e.target.value;
+            document.body.className = `theme-${previewTheme}`;
+            updateThemeColors();
+            if (canvas && ctx) draw();
+        });
+    }
+
+    if (saveSettingsBtn) {
+        saveSettingsBtn.addEventListener('click', function() {
+            settingsSaved = true; 
+            
+            if (nameInput) {
+                const newName = nameInput.value || "Guest";
+                savePlayerName(newName);
+                if (hudPlayerName) hudPlayerName.innerText = newName; 
+            }
+            
+            if (themeSelect) {
+                const newTheme = themeSelect.value;
+                saveTheme(newTheme);
+                initialTheme = newTheme; 
+                document.body.className = `theme-${newTheme}`;
+            }
+            
+            if (speedSelect) {
+                const newSpeed = parseInt(speedSelect.value, 10);
+                saveSpeed(newSpeed);
+                baseSpeed = newSpeed;
+                speed = newSpeed;
+                
+                if (baseSpeed >= 10) foodScore = 1;
+                else if (baseSpeed >= 7) foodScore = 2;
+                else if (baseSpeed >= 5) foodScore = 3;
+                else foodScore = 5;
+            }
+
+            updateThemeColors();
+            if (canvas && ctx) draw();
+            
+            const modalInstance = window.bootstrap.Modal.getInstance(settingsModal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+    }
+});
