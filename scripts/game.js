@@ -229,69 +229,93 @@ document.addEventListener("DOMContentLoaded", function() {
     const leftBtn = document.getElementById("leftBtn");
     const rightBtn = document.getElementById("rightBtn");
 
-    console.log("Hint: If you hate Mondays, try Garfield as your name.");
-
-    // Start Game logic
-    if (startBtn) {
-        startBtn.addEventListener("click", function() {
-            document.getElementById("startScreen").classList.add("d-none");
-            
-            // Swap the buttons in the HUD
-            startBtn.classList.add("d-none");
-            restartBtn.classList.remove("hidden"); // Remove old hidden class if present
-            restartBtn.classList.remove("d-none");
-            
-            main(); 
-        });
-    }
-
-    // Restart Game logic
-    if (restartBtn) {
-        restartBtn.addEventListener("click", function() {
-            document.getElementById("gameOverScreen").classList.add("d-none"); 
-            initGame(); 
-            loop(); // Restart the animation engine loop
-        });
-    }
-
-    // Mobile keyboard touch controls
-    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN) snake.direction = UP; });
-    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP) snake.direction = DOWN; });
-    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT) snake.direction = LEFT; });
-    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT) snake.direction = RIGHT; });
-
-    // --- Settings UI Wiring ---
+    const settingsModal = document.getElementById('settingsModal');
     const nameInput = document.getElementById('playerNameInput');
     const themeSelect = document.getElementById('themeSelect');
     const speedSelect = document.getElementById('speedSelect');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 
-    // Load current settings into the modal inputs when the page loads
+    let initialTheme = getTheme();
+    let settingsSaved = false;
+
+    // Load initial values
     if (nameInput) nameInput.value = getPlayerName();
-    if (themeSelect) themeSelect.value = getTheme();
+    if (themeSelect) themeSelect.value = initialTheme;
     if (speedSelect) speedSelect.value = getSpeed();
 
-    // Only apply and save changes when the "Save Changes" button is clicked
+    // Handle Start Game
+    if (startBtn) {
+        startBtn.addEventListener("click", function() {
+            document.getElementById("startScreen").classList.add("d-none");
+            startBtn.classList.add("d-none");
+            restartBtn.classList.remove("d-none");
+            main(); 
+        });
+    }
+
+    // Handle Restart
+    if (restartBtn) {
+        restartBtn.addEventListener("click", function() {
+            document.getElementById("gameOverScreen").classList.add("d-none"); 
+            initGame(); 
+            loop(); 
+        });
+    }
+
+    // Mobile controls logic...
+    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN) snake.direction = UP; });
+    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP) snake.direction = DOWN; });
+    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT) snake.direction = LEFT; });
+    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT) snake.direction = RIGHT; });
+
+    // --- Settings Preview & Logic ---
+
+    // When the modal opens, record the current theme so we can revert if needed
+    if (settingsModal) {
+        settingsModal.addEventListener('show.bs.modal', function () {
+            initialTheme = getTheme();
+            settingsSaved = false;
+        });
+
+        // When the modal closes, if "Save" wasn't clicked, revert the theme
+        settingsModal.addEventListener('hide.bs.modal', function () {
+            if (!settingsSaved) {
+                document.body.className = `theme-${initialTheme}`;
+                themeSelect.value = initialTheme;
+                updateThemeColors();
+                if (canvas && ctx) draw();
+            }
+        });
+    }
+
+    // Immediate Theme Preview on Selection
+    if (themeSelect) {
+        themeSelect.addEventListener('change', function(e) {
+            const previewTheme = e.target.value;
+            document.body.className = `theme-${previewTheme}`;
+            
+            // Re-fetch CSS variables and redraw canvas immediately
+            updateThemeColors();
+            if (canvas && ctx) draw();
+        });
+    }
+
+    // Finalize and Save Changes
     if (saveSettingsBtn) {
         saveSettingsBtn.addEventListener('click', function() {
+            settingsSaved = true; // Mark as saved so hide.bs.modal doesn't revert
+            
             if (nameInput) savePlayerName(nameInput.value);
             
             if (themeSelect) {
                 saveTheme(themeSelect.value);
-                // Immediately apply the new theme to the document body
-                document.body.className = `theme-${themeSelect.value}`;
-                
-                // Force the canvas to redraw with new colors immediately (even if paused/over)
-                updateThemeColors();
-                if (canvas && ctx) {
-                    draw();
-                }
             }
             
             if (speedSelect) {
                 saveSpeed(speedSelect.value);
-                speed = parseInt(speedSelect.value); // Update live speed if playing
+                speed = parseInt(speedSelect.value, 10);
             }
         });
     }
 });
+
