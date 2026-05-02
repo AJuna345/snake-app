@@ -16,6 +16,7 @@ var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
 var speed = 7; 
 var foodScore = 1; // Will dynamically update based on speed
+var changingDirection = false; // Added to prevent double-turn suicide bug
 
 // Default Theme Colors
 var snakeColor = "#28a745";
@@ -77,6 +78,11 @@ function main() {
     
     canvas = document.createElement("canvas");
     canvas.width = WIDTH*20; canvas.height = HEIGHT*20;
+    
+    // --- Responsive Canvas Fix ---
+    canvas.style.maxWidth = "100%";
+    canvas.style.height = "auto";
+    
     ctx = canvas.getContext("2d");
     board.appendChild(canvas);
     
@@ -88,17 +94,26 @@ function main() {
     loop();
 }
 
+// Helper function to update the High Score on the left HUD
+function updateHighScoreHUD() {
+    const highScores = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
+    const topScore = highScores.length > 0 ? highScores[0].score : 0;
+    const hudHighScore = document.getElementById("hudHighScoreDisplay");
+    if (hudHighScore) hudHighScore.innerText = topScore;
+}
+
 function initGame() {
     score = 0; 
     gameOver = false;
     frames = 0;           
     speed = getSpeed();   
+    changingDirection = false; // Reset lock on game start
 
-    // Higher difficulty (lower speed number) = higher points per food
-    if (speed >= 10)     foodScore = 1;  // Slow
+    // --- RESTORED MULTIPLIER LOGIC ---
+    if (speed >= 10) foodScore = 1;      // Slow
     else if (speed >= 7) foodScore = 2;  // Normal
     else if (speed >= 5) foodScore = 3;  // Fast
-    else                 foodScore = 5;  // Insane
+    else foodScore = 5;                  // Insane
 
     grid.init(EMPTY, WIDTH, HEIGHT);
     var sp = {x:Math.floor(WIDTH/2), y:HEIGHT-1};
@@ -109,6 +124,9 @@ function initGame() {
     // Ensure HUD score resets when starting a new game
     const hudScore = document.getElementById("hudScoreDisplay");
     if (hudScore) hudScore.innerText = score;
+    
+    // Fetch and display latest high score dynamically
+    updateHighScoreHUD();
 }
 
 function loop() {
@@ -120,10 +138,14 @@ function loop() {
 
 function update() {
     frames++;
-    if (keystate[KEY_LEFT] && snake.direction !== RIGHT) snake.direction = LEFT;
-    if (keystate[KEY_UP] && snake.direction !== DOWN) snake.direction = UP;
-    if (keystate[KEY_RIGHT] && snake.direction !== LEFT) snake.direction = RIGHT;
-    if (keystate[KEY_DOWN] && snake.direction !== UP) snake.direction = DOWN;
+    
+    // Prevent multiple inputs from overriding the direction in a single movement frame
+    if (!changingDirection) {
+        if (keystate[KEY_LEFT] && snake.direction !== RIGHT) { snake.direction = LEFT; changingDirection = true; }
+        else if (keystate[KEY_UP] && snake.direction !== DOWN) { snake.direction = UP; changingDirection = true; }
+        else if (keystate[KEY_RIGHT] && snake.direction !== LEFT) { snake.direction = RIGHT; changingDirection = true; }
+        else if (keystate[KEY_DOWN] && snake.direction !== UP) { snake.direction = DOWN; changingDirection = true; }
+    }
 
     if (frames % speed === 0) {
         var nx = snake.last.x; var ny = snake.last.y;
@@ -153,6 +175,9 @@ function update() {
         }
         grid.set(SNAKE, nx, ny);
         snake.insert(nx, ny);
+        
+        // Unlock direction changes immediately AFTER the snake physically moves
+        changingDirection = false;
     }
 }
 
@@ -172,13 +197,11 @@ function draw() {
 
             if (val === SNAKE) {
                 if (x === snake.last.x && y === snake.last.y) {
-                    // Head
                     ctx.shadowBlur = 10;
                     ctx.shadowColor = snakeColor;
                     ctx.fillStyle = snakeColor;
                     ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                     
-                    // Eyes
                     ctx.shadowBlur = 5;
                     ctx.fillStyle = contrastColor;
                     if (snake.direction === UP || snake.direction === DOWN) {
@@ -189,20 +212,17 @@ function draw() {
                         ctx.fillRect(x*tw + tw/2 - 2, y*th + th - 8, 4, 4); 
                     }
                 } else {
-                    // Body
                     ctx.shadowBlur = 8;
                     ctx.shadowColor = snakeColor;
                     ctx.fillStyle = snakeColor;
                     ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                     
-                    // Internal Grid
                     ctx.shadowBlur = 0;
                     ctx.fillStyle = canvasBg;
                     ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, th - 4); 
                     ctx.fillRect(x*tw + 2, y*th + th/2 - 1, tw - 4, 2); 
                 }
             } else if (val === FOOD) {
-                // Food
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = borderColor;
                 ctx.fillStyle = borderColor;
@@ -257,13 +277,11 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Mobile controls
-    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN) snake.direction = UP; });
-    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP) snake.direction = DOWN; });
-    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT) snake.direction = LEFT; });
-    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT) snake.direction = RIGHT; });
-
-    // --- Fixed Settings & Preview Logic ---
+    // Mobile controls with direction lock logic applied
+    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN && !changingDirection) { snake.direction = UP; changingDirection = true; }});
+    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP && !changingDirection) { snake.direction = DOWN; changingDirection = true; }});
+    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT && !changingDirection) { snake.direction = LEFT; changingDirection = true; }});
+    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT && !changingDirection) { snake.direction = RIGHT; changingDirection = true; }});
 
     if (settingsModal) {
         settingsModal.addEventListener('show.bs.modal', function () {
@@ -290,7 +308,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Fixed Save Logic - Now controls the modal manually!
     if (saveSettingsBtn) {
         saveSettingsBtn.addEventListener('click', function() {
             settingsSaved = true; 
@@ -309,7 +326,6 @@ document.addEventListener("DOMContentLoaded", function() {
                 saveSpeed(newSpeed);
                 speed = newSpeed;
                 
-                // Update multiplier dynamically if game is running
                 if (speed >= 10) foodScore = 1;
                 else if (speed >= 7) foodScore = 2;
                 else if (speed >= 5) foodScore = 3;
@@ -319,7 +335,6 @@ document.addEventListener("DOMContentLoaded", function() {
             updateThemeColors();
             if (canvas && ctx) draw();
             
-            // Programmatically hide the modal using Bootstrap's built-in global object
             const modalInstance = window.bootstrap.Modal.getInstance(settingsModal);
             if (modalInstance) {
                 modalInstance.hide();
