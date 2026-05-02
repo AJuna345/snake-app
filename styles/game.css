@@ -124,6 +124,7 @@ body.theme-garfield {
     --snake-color: #ffa502;   
     --canvas-bg: #fff5e6;     
     --border-color: #543200; 
+    --button-text-color: #000000;
 }
 
 /* Make Sidebar Cards match the theme colors */
