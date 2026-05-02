@@ -235,15 +235,16 @@ document.addEventListener("DOMContentLoaded", function() {
     const speedSelect = document.getElementById('speedSelect');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 
+    // State tracking for the theme preview
     let initialTheme = getTheme();
     let settingsSaved = false;
 
-    // Load initial values
+    // Load initial values into UI
     if (nameInput) nameInput.value = getPlayerName();
     if (themeSelect) themeSelect.value = initialTheme;
     if (speedSelect) speedSelect.value = getSpeed();
 
-    // Handle Start Game
+    // Start & Restart Logic
     if (startBtn) {
         startBtn.addEventListener("click", function() {
             document.getElementById("startScreen").classList.add("d-none");
@@ -253,7 +254,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Handle Restart
     if (restartBtn) {
         restartBtn.addEventListener("click", function() {
             document.getElementById("gameOverScreen").classList.add("d-none"); 
@@ -262,22 +262,22 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Mobile controls logic...
+    // Mobile controls
     if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN) snake.direction = UP; });
     if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP) snake.direction = DOWN; });
     if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT) snake.direction = LEFT; });
     if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT) snake.direction = RIGHT; });
 
-    // --- Settings Preview & Logic ---
+    // --- Fixed Settings & Preview Logic ---
 
-    // When the modal opens, record the current theme so we can revert if needed
     if (settingsModal) {
+        // Reset the flag and capture the current theme whenever the modal opens
         settingsModal.addEventListener('show.bs.modal', function () {
             initialTheme = getTheme();
             settingsSaved = false;
         });
 
-        // When the modal closes, if "Save" wasn't clicked, revert the theme
+        // Revert only if the user didn't click "Save Changes"
         settingsModal.addEventListener('hide.bs.modal', function () {
             if (!settingsSaved) {
                 document.body.className = `theme-${initialTheme}`;
@@ -288,33 +288,42 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Immediate Theme Preview on Selection
+    // Theme Preview: Apply changes to the UI immediately
     if (themeSelect) {
         themeSelect.addEventListener('change', function(e) {
             const previewTheme = e.target.value;
             document.body.className = `theme-${previewTheme}`;
-            
-            // Re-fetch CSS variables and redraw canvas immediately
             updateThemeColors();
             if (canvas && ctx) draw();
         });
     }
 
-    // Finalize and Save Changes
+    // Save Changes: Lock in the new settings
     if (saveSettingsBtn) {
         saveSettingsBtn.addEventListener('click', function() {
-            settingsSaved = true; // Mark as saved so hide.bs.modal doesn't revert
+            // 1. Immediately set the flag so the 'hide' event knows not to revert
+            settingsSaved = true; 
             
+            // 2. Persist the data
             if (nameInput) savePlayerName(nameInput.value);
             
             if (themeSelect) {
-                saveTheme(themeSelect.value);
+                const newTheme = themeSelect.value;
+                saveTheme(newTheme);
+                // Update our baseline so future cancels revert to THIS theme
+                initialTheme = newTheme; 
+                document.body.className = `theme-${newTheme}`;
             }
             
             if (speedSelect) {
-                saveSpeed(speedSelect.value);
-                speed = parseInt(speedSelect.value, 10);
+                const newSpeed = parseInt(speedSelect.value, 10);
+                saveSpeed(newSpeed);
+                speed = newSpeed;
             }
+
+            // 3. Ensure the canvas reflects the saved state
+            updateThemeColors();
+            if (canvas && ctx) draw();
         });
     }
 });
