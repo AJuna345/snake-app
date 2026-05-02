@@ -1,0 +1,223 @@
+/* Import the games fonts from Google. I like the classic 16 bit DotGothic16 better than Press Start 2P */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+
+/* Theme CSS Variables */
+:root, body.theme-classic {
+    --bg-color: #ecf0f1;
+    --text-color: #333333;
+    --snake-color: #28a745;
+    --canvas-bg: #ffffff;
+    --border-color: #333333;
+}
+
+body.theme-dark {
+    --bg-color: #222222;
+    --text-color: #ffffff;
+    --snake-color: #8e4fd6;
+    --canvas-bg: #111111;
+    --border-color: #8e4fd6;
+}
+
+body.theme-neon {
+    --bg-color: #000000;
+    --text-color: #00ffff;
+    --snake-color: #ff00ff;
+    --canvas-bg: #000000;
+    --border-color: #00ffff;
+}
+
+/* Set the font, colors, and spacing for the game */
+body {
+    font-family: 'DotGothic16', 'Courier New', monospace;
+    text-align: center;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin: 0;
+    padding-bottom: 50px;
+}
+
+/* Make the snake game buttons to look more like arcade buttons */
+.arcade-button {
+    font-family: 'DotGothic16', 'Courier New', monospace;
+    display: inline-block;
+    background-color: #e74c3c;
+    color: white;
+    padding: 15px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    border: 4px solid #c0392b;
+    box-shadow: 0px 6px 0px #c0392b;
+    transition: all 0.1s;
+    margin-top: 20px;
+    cursor: pointer;
+}
+
+.arcade-button:active {
+    box-shadow: 0px 0px 0px #c0392b;
+    transform: translateY(6px);
+}
+
+.arcade-button:hover {
+    background-color: #ff5e4d;
+    color: white;
+}
+
+.game-settings {
+    margin: 20px auto;
+    padding: 15px;
+    background-color: var(--canvas-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    display: inline-block;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    border: 5px solid var(--border-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    transition: border-color 0.3s ease;
+}
+
+.hidden {
+    display: none !important;
+}
+
+#gameOverScreen {
+    /* Center the Game Over screen */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    width: 80%;
+    max-width: 350px;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    padding: 30px 20px;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    border: 2px solid #ff4444;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+}
+
+/* Hide the Game Over box until the game ends */
+#gameOverScreen.hidden {
+    display: block !important;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Prevent users from clicking the invisible Play button */
+}
+
+/* Garfield Easter Egg theme */
+body.theme-garfield {
+    --bg-color: #ffa502;      
+    --text-color: #543200;    
+    --snake-color: #ffa502;   
+    --canvas-bg: #fff5e6;     
+    --border-color: #543200; 
+}
+
+/* Make Sidebar Cards match the theme colors */
+.card {
+    background-color: var(--canvas-bg);
+    border: 2px solid var(--border-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Make the navbar use the theme colors */
+.navbar {
+    background-color: var(--bg-color);
+}
+
+.navbar .nav-link.header-link,
+.navbar .navbar-brand {
+    color: var(--text-color) !important;
+}
+
+.navbar .nav-link.header-link:hover,
+.navbar .nav-link.header-link:focus {
+    color: var(--snake-color) !important;
+}
+
+.navbar-toggler {
+    border-color: var(--border-color);
+}
+
+.navbar-toggler-icon {
+    filter: brightness(0) saturate(100%);
+}
+
+/* Make the keyboard key icons match the theme */
+kbd {
+    font-family: 'DotGothic16', 'Courier New', monospace;
+    background-color: var(--border-color);
+    color: var(--canvas-bg);
+    padding: 2px 5px;
+    font-size: 0.9rem;
+}
+
+/* Make the links at the bottom match the theme */
+footer .btn-outline-secondary {
+    font-family: 'DotGothic16', 'Courier New', monospace;
+    font-size: 12px;
+    color: var(--text-color);
+    border-color: var(--border-color);
+}
+
+footer .btn-outline-secondary:hover {
+    background-color: var(--border-color);
+    color: var(--canvas-bg);
+}
+
+/* W3C Selectors spec: https://www.w3.org/TR/selectors-4/#the-nth-child-pseudo */
+/* Advanced Selector: Selects odd-numbered list items */
+/* Changes the opacity of every other control item to make it look more interesting */
+.card ul li:nth-child(odd) {
+    opacity: 0.85;
+}
+
+/* W3C Selectors spec: https://www.w3.org/TR/selectors-4/#attribute-selectors */
+/* Advanced Selector: Finds links with target="_blank" */
+/* Highlights links that open a new tab */
+a[target="_blank"] {
+    text-decoration: underline;
+}
+
+/* Hide keyboard touch controls on desktop */
+#mobileControls {
+    display: none;
+}
+
+/* Show keybaord touch controls on smaller screens */
+@media (max-width: 768px) {
+    #mobileControls {
+        display: block;
+    }
+
+    #mobileControls .btn {
+        min-width: 60px;
+        font-size: 1.5rem;
+    }
+}
+
+/* Include a reduced-motion friendly animation or transition (respect prefers-reduced-motion) */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
