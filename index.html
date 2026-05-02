@@ -47,7 +47,7 @@
                             <button id="startBtn" class="btn btn-lg fw-bold border-0" style="background-color: var(--snake-color); color: var(--canvas-bg);">
                                 ▶ START GAME
                             </button>
-                            <button id="restartBtn" class="btn btn-lg fw-bold btn-outline-secondary hidden">
+                            <button id="restartBtn" class="btn btn-lg fw-bold btn-outline-secondary d-none">
                                 ↺ RESTART
                             </button>
                         </div>
@@ -69,6 +69,10 @@
                         <button type="button" class="btn btn-outline-secondary w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
                             🏆 GLOBAL LEADERBOARD
                         </button>
+                        
+                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold mt-2" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                            ⚙️ GAME SETTINGS
+                        </button>
                     </div>
                 </div>
             </div>
@@ -83,7 +87,7 @@
                             <p class="text-info small border border-info rounded px-3 py-1">Click START GAME on the left</p>
                         </div>
 
-                        <div id="gameOverScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2 hidden" style="background-color: rgba(255, 0, 0, 0.2); backdrop-filter: blur(6px);">
+                        <div id="gameOverScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2 d-none" style="background-color: rgba(255, 0, 0, 0.2); backdrop-filter: blur(6px);">
                             <h1 class="fw-bold display-3 text-white text-shadow-sm mb-0">CRITICAL FAILURE</h1>
                             <p class="fs-4 text-white mt-3">Final Score: <span id="finalScore" class="fw-bold" style="color: var(--snake-color);">0</span></p>
                         </div>
@@ -98,11 +102,11 @@
         </div>
     </main>
 
-    <div class="modal fade" id="leaderboardModal" tabindex="-1" aria-labelledby="leaderboardModalLabel" aria-hidden="true">
+    <div class="modal fade" id="leaderboardModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content border-0 shadow-lg" style="background-color: var(--canvas-bg); color: var(--text-color);">
                 <div class="modal-header border-secondary" style="background-color: var(--bg-color);">
-                    <h5 class="modal-title fw-bold" id="leaderboardModalLabel">Top Pilots</h5>
+                    <h5 class="modal-title fw-bold">Top Pilots</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1); opacity: 0.5;"></button>
                 </div>
                 <div class="modal-body p-0">
@@ -121,6 +125,41 @@
                 <div class="modal-footer border-secondary justify-content-between" style="background-color: var(--bg-color);">
                     <small class="opacity-50">Local Storage Active</small>
                     <button id="clearLeaderboardBtn" class="btn btn-sm btn-outline-danger">Wipe Data</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="settingsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="background-color: var(--canvas-bg); color: var(--text-color);">
+                <div class="modal-header border-secondary" style="background-color: var(--bg-color);">
+                    <h5 class="modal-title fw-bold">Game Settings</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1); opacity: 0.5;"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Pilot Name</label>
+                        <input type="text" id="playerNameInput" class="form-control bg-transparent text-light border-secondary" placeholder="Enter your initials">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">UI Theme</label>
+                        <select id="themeSelect" class="form-select bg-transparent border-secondary" style="color: var(--text-color);">
+                            <option value="classic" class="text-dark">Classic</option>
+                            <option value="dark" class="text-dark">Dark Mode</option>
+                            <option value="neon" class="text-dark">Cyber Neon</option>
+                            <option value="garfield" class="text-dark">Garfield (Easter Egg)</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Difficulty (Speed)</label>
+                        <select id="speedSelect" class="form-select bg-transparent border-secondary" style="color: var(--text-color);">
+                            <option value="10" class="text-dark">Slow (Training)</option>
+                            <option value="7" class="text-dark">Normal</option>
+                            <option value="5" class="text-dark">Fast</option>
+                            <option value="3" class="text-dark">Insane</option>
+                        </select>
+                    </div>
                 </div>
             </div>
         </div>
