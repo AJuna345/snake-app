@@ -10,12 +10,11 @@ import {
 } from './storage.js';
 
 var WIDTH = 26, HEIGHT = 26; // Width and height of the game board
-// Added the 3 new powerup tile types
 var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3, SCORE2X = 4, NEWWALLS = 5, SLOWMO = 6;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
-var baseSpeed = 7; // Tracks the chosen difficulty setting
+var baseSpeed = 7; 
 var speed = 7; 
 var foodScore = 1; 
 var changingDirection = false; 
@@ -79,7 +78,6 @@ function setFood() {
     }
 }
 
-// --- Spawns a random mystery powerup ---
 function spawnPowerup() {
     var empty = [];
     for (var x=0; x < grid.width; x++) {
@@ -91,6 +89,21 @@ function spawnPowerup() {
         var randpos = empty[Math.floor(Math.random()*empty.length)];
         var pType = Math.floor(Math.random() * 3) + 4; // Picks 4, 5, or 6
         grid.set(pType, randpos.x, randpos.y);
+    }
+}
+
+// --- NEW FUNCTION: Show/Hide the HUD Power-up Text ---
+function updatePowerupHUD(text) {
+    const container = document.getElementById('powerupContainer');
+    const display = document.getElementById('hudPowerupDisplay');
+    if (container && display) {
+        if (text) {
+            display.innerText = text;
+            container.classList.remove('d-none');
+        } else {
+            display.innerText = "";
+            container.classList.add('d-none');
+        }
     }
 }
 
@@ -141,7 +154,6 @@ function generateRandomWalls(numWalls) {
             var wy = isHorizontal ? startY : startY + j;
             
             if (grid.get(wx, wy) === EMPTY) {
-                // Ensure we don't spawn a wall within a 4-block radius of the snake's start
                 if (Math.abs(wx - spawnX) < 4 && Math.abs(wy - spawnY) < 4) {
                     continue; 
                 }
@@ -161,6 +173,8 @@ function initGame() {
     
     activePowerup = null;
     powerupTimer = 0;
+    
+    updatePowerupHUD(null); // Ensure the HUD is clear on new game
 
     if (baseSpeed >= 10) foodScore = 1;      
     else if (baseSpeed >= 7) foodScore = 2;  
@@ -194,9 +208,10 @@ function update() {
     if (powerupTimer > 0) {
         powerupTimer--;
         if (powerupTimer === 0) {
-            // Reset active powerup states
+            // Timer ran out: Reset state and clear the HUD text
             activePowerup = null;
             speed = baseSpeed; // Ends SLOWMO
+            updatePowerupHUD(null); 
         }
     }
     
@@ -235,22 +250,26 @@ function update() {
             setFood();
             
             // 20% chance to drop a mystery powerup when eating
-            if (Math.random() < 0.99) spawnPowerup();
+            if (Math.random() < 0.20) spawnPowerup();
 
         } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
             // Picked up a Mystery Powerup
             if (targetVal === SCORE2X) {
                 activePowerup = SCORE2X;
-                powerupTimer = 600; // 10 seconds (assuming 60 fps)
+                powerupTimer = 600; // 10 seconds
+                updatePowerupHUD("Double Score!");
             } else if (targetVal === NEWWALLS) {
-                generateRandomWalls(2); // Instantly drop 2 new walls to surprise them
+                generateRandomWalls(2); // Instantly drop 2 new walls
+                activePowerup = NEWWALLS;
+                powerupTimer = 600; // Display text for 10 seconds
+                updatePowerupHUD("New Walls!?!");
             } else if (targetVal === SLOWMO) {
                 activePowerup = SLOWMO;
-                powerupTimer = 600;
-                speed = baseSpeed + 4; // Increases frames between moves = Slower Snake
+                powerupTimer = 600; // 10 seconds
+                speed = baseSpeed + 4; // Slows the snake down
+                updatePowerupHUD("Slow Mo");
             }
             
-            // Powerups don't grow the snake, just replace the tail
             var tail = snake.remove();
             grid.set(EMPTY, tail.x, tail.y);
             
@@ -337,12 +356,10 @@ function draw() {
                 ctx.stroke();
                 
             } else if (val >= SCORE2X && val <= SLOWMO) {
-                // Mystery Powerups are drawn identically to trick the player!
                 ctx.shadowBlur = 15;
-                ctx.shadowColor = "#f1c40f"; // Glowing Gold
+                ctx.shadowColor = "#f1c40f"; 
                 ctx.fillStyle = "#f39c12";
                 
-                // Draw a pulsing diamond shape
                 ctx.beginPath();
                 ctx.moveTo(x*tw + tw/2, y*th + 2);
                 ctx.lineTo(x*tw + tw - 2, y*th + th/2);
