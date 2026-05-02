@@ -1,204 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Easter Egg: If you hate Mondays type Garfield as your name -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNCAFFEINATED - Home</title>
+    <title>UNCAFFEINATED - Polished Snake</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="styles/game.css" rel="stylesheet">
 </head>
     
 <body class="theme-classic">
-  <header class="py-4 border-bottom">
-      <div class="text-center mb-4">
-          <div class="d-flex justify-content-center align-items-center gap-3">
-              <h1 class="display-5 fw-bold site-title m-0">UNCAFFEINATED SNAKE GAME</h1>
-          </div>
-          <p class="text-muted fst-italic mt-2 mb-0">Now with more snake</p>
-      </div>
+    
+    <script>
+        const savedTheme = localStorage.getItem('snakeTheme') || 'classic';
+        document.body.className = `theme-${savedTheme}`;
+    </script>
 
-      <nav class="navbar navbar-expand-lg navbar-light">
-          <div class="container justify-content-center">
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-
-              <div class="collapse navbar-collapse justify-content-center" id="mainNavbar">
-                  <ul class="navbar-nav gap-lg-4 fw-semibold">
-                      <li class="nav-item">
-                          <a href="pages/how-play.html" class="nav-link header-link">How to Play</a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="https://ajuna345.github.io/snake-game/" class="nav-link header-link">Play/Reset</a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="https://ajuna345.github.io/AJuna345/" target="_blank" class="nav-link header-link">Dev Profile</a>
-                      </li>
-                      <li class="nav-item">
-                          <a href="#" class="nav-link header-link" data-bs-toggle="modal" data-bs-target="#leaderboardModal">Leaderboard</a>
-                      </li>
-                  </ul>
-              </div>
-          </div>
-      </nav>
-  </header>
-
-  <main class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div id="startScreen">
-                <h2>Ready to Play?</h2>
-                <button id="startBtn" class="arcade-button" style="background-color: #28a745; border-color: #1e7e34; box-shadow: 0px 6px 0px #1e7e34;">START GAME</button>
-            </div>
-
-            <div aria-live="polite" id="game-announcer" class="visually-hidden"></div>
-
-            <div id="game-section" class="hidden" style="margin-top: 20px;">
-                <div id="gameOverScreen" class="hidden">
-                    <h1 style="color: #ff4444;">GAME OVER</h1>
-                    <p>Final Score: <span id="finalScore" class="fw-bold fs-4">0</span></p>
-                    <button id="restartBtn" class="arcade-button">Play Again</button>
-                </div>
-
-                <div id="mobileControls" class="mt-3">
-                    <div class="d-flex justify-content-center mb-2">
-                        <button type="button" id="upBtn" class="btn btn-secondary">↑</button>
-                    </div>
-                    <div class="d-flex justify-content-center gap-2">
-                        <button type="button" id="leftBtn" class="btn btn-secondary">←</button>
-                        <button type="button" id="downBtn" class="btn btn-secondary">↓</button>
-                        <button type="button" id="rightBtn" class="btn btn-secondary">→</button>
-                    </div>
-                </div>
-            </div>
+    <header class="py-3 border-bottom mb-4">
+        <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
+            <h1 class="display-6 fw-bold site-title m-0">UNCAFFEINATED SNAKE</h1>
+            <a href="pages/how-play.html" class="btn btn-outline-secondary btn-sm">How to Play</a>
         </div>
+    </header>
 
-        <div class="col-md-4">
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 class="card-title fw-bold">How to Play</h2>
-                    <p class="small mb-3">
-                        Eat the food to grow longer and score points.<br>
-                        Don't hit the walls or your own tail!
-                    </p>
-                    <h3 class="text-center fw-bold mb-2">Controls</h3>
-                    <ul class="list-unstyled">
-                        <li><strong style="display: inline-block; width: 70px;">UP:</strong> <kbd>↑</kbd></li>
-                        <li><strong style="display: inline-block; width: 70px;">DOWN:</strong> <kbd>↓</kbd></li>
-                        <li><strong style="display: inline-block; width: 70px;">LEFT:</strong> <kbd>←</kbd></li>
-                        <li><strong style="display: inline-block; width: 70px;">RIGHT:</strong> <kbd>→</kbd></li>
-                    </ul>
-                    <hr>
+    <main class="container-fluid px-4 pb-5">
+        <div class="row flex-column-reverse flex-lg-row">
+            
+            <div class="col-lg-3 col-xl-3 mb-4">
+                <div class="card shadow-lg border-secondary rounded-4 overflow-hidden h-100" style="background-color: var(--canvas-bg);">
+                    <div class="card-header text-center border-secondary py-3" style="background-color: var(--border-color); color: var(--bg-color);">
+                        <h5 class="m-0 fw-bold text-uppercase tracking-wide">Command Center</h5>
+                    </div>
+                    
+                    <div class="card-body d-flex flex-column gap-4 p-4">
+                        
+                        <div class="hud-panel p-3 rounded-3" style="background-color: var(--bg-color);">
+                            <h6 class="text-uppercase mb-2 opacity-75" style="color: var(--text-color);">Current Score</h6>
+                            <h2 id="hudScoreDisplay" class="fw-bold mb-3" style="color: var(--snake-color);">0</h2>
+                            
+                            <h6 class="text-uppercase mb-2 opacity-75" style="color: var(--text-color);">High Score</h6>
+                            <h3 id="hudHighScoreDisplay" class="fw-bold m-0" style="color: var(--text-color);">
+                                <script>document.write(JSON.parse(localStorage.getItem('snakeLeaderboard'))?.[0]?.score || 0);</script>
+                            </h3>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button id="startBtn" class="btn btn-lg fw-bold border-0" style="background-color: var(--snake-color); color: var(--canvas-bg);">
+                                ▶ START GAME
+                            </button>
+                            <button id="restartBtn" class="btn btn-lg fw-bold btn-outline-secondary hidden">
+                                ↺ RESTART
+                            </button>
+                        </div>
+
+                        <div id="mobileControls" class="text-center mt-3 d-lg-none">
+                            <h6 class="mb-2 opacity-75" style="color: var(--text-color);">D-Pad</h6>
+                            <div class="btn-group-vertical shadow-sm">
+                                <button id="upBtn" class="btn btn-secondary py-3">▲</button>
+                                <div class="btn-group">
+                                    <button id="leftBtn" class="btn btn-secondary px-4 py-3">◀</button>
+                                    <button id="downBtn" class="btn btn-secondary px-4 py-3">▼</button>
+                                    <button id="rightBtn" class="btn btn-secondary px-4 py-3">▶</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="border-secondary opacity-25">
+
+                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
+                            🏆 GLOBAL LEADERBOARD
+                        </button>
+                    </div>
                 </div>
             </div>
-            
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <form id="settingsForm" novalidate>
-                        <div class="mb-3">
-                            <label for="playerName"><strong>Player Name:</strong></label>
-                            <input
-                                type="text"
-                                id="playerName"
-                                name="playerName"
-                                class="form-control form-control-sm"
-                                placeholder="Enter your name"
-                                required
-                                minlength="2"
-                                maxlength="12"
-                                pattern="[A-Za-z0-9 ]+"
-                                aria-describedby="playerNameHelp playerNameError"
-                            >
-                            <div id="playerNameHelp" class="form-text">
-                                Use 2-12 letters, numbers, or spaces.
+
+            <div class="col-lg-9 col-xl-9 mb-4">
+                <div class="card shadow-lg border-secondary rounded-4 overflow-hidden h-100" style="background-color: var(--bg-color);">
+                    <div class="card-body p-0 d-flex justify-content-center align-items-center position-relative" style="min-height: 65vh;">
+                        
+                        <div id="startScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2" style="background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
+                            <h2 class="fw-bold mb-3 text-white">System Ready</h2>
+                            <p class="text-white-50 mb-4">Use Arrow Keys or Mobile D-Pad to navigate.</p>
+                            <p class="text-info small border border-info rounded px-3 py-1">Click START GAME on the left</p>
+                        </div>
+
+                        <div id="gameOverScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2 hidden" style="background-color: rgba(255, 0, 0, 0.2); backdrop-filter: blur(6px);">
+                            <h1 class="fw-bold display-3 text-white text-shadow-sm mb-0">CRITICAL FAILURE</h1>
+                            <p class="fs-4 text-white mt-3">Final Score: <span id="finalScore" class="fw-bold" style="color: var(--snake-color);">0</span></p>
+                        </div>
+
+                        <div id="game-board" class="w-100 h-100 d-flex justify-content-center align-items-center p-3">
                             </div>
-                            <div id="playerNameError" class="text-danger small mt-1" aria-live="polite"></div>
-                            <div id="greetingMessage" class="mt-2 small fw-bold text-center"></div>
-                        </div>
 
-                        <div class="mb-3">
-                            <label for="themeSelect"><strong>Select Theme:</strong></label>
-                            <select id="themeSelect" name="themeSelect" class="form-select form-select-sm" required aria-describedby="themeError">
-                                <option value="">Choose a theme</option>
-                                <option value="classic">Classic</option>
-                                <option value="dark">Dark Mode</option>
-                                <option value="neon">Neon</option>
-                            </select>
-                            <div id="themeError" class="text-danger small mt-1" aria-live="polite"></div>
-                        </div>
+                    </div>
+                </div>
+            </div>
 
-                        <div>
-                            <label for="speedSelect"><strong>Difficulty:</strong></label>
-                            <select id="speedSelect" name="speedSelect" class="form-select form-select-sm" required aria-describedby="speedError">
-                                <option value="">Choose a difficulty</option>
-                                <option value="10">Easy (Slow)</option>
-                                <option value="7">Medium (Normal)</option>
-                                <option value="4">Hard (Fast)</option>
-                                <option value="2">Insane (Ultra Fast)</option>
-                            </select>
-                            <div id="speedError" class="text-danger small mt-1" aria-live="polite"></div>
-                        </div>
+        </div>
+    </main>
 
-                        <button id="saveNameBtn" type="submit" class="btn btn-sm btn-primary mt-3 w-100" style="background-color: #8e4fd6; border: none;">Save Settings</button>
-                    </form>
+    <div class="modal fade" id="leaderboardModal" tabindex="-1" aria-labelledby="leaderboardModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="background-color: var(--canvas-bg); color: var(--text-color);">
+                <div class="modal-header border-secondary" style="background-color: var(--bg-color);">
+                    <h5 class="modal-title fw-bold" id="leaderboardModalLabel">Top Pilots</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1); opacity: 0.5;"></button>
+                </div>
+                <div class="modal-body p-0">
+                    <table class="table table-borderless table-hover mb-0 text-center" style="--bs-table-bg: transparent; --bs-table-color: var(--text-color);">
+                        <thead class="border-bottom border-secondary opacity-75">
+                            <tr>
+                                <th class="py-3">Rank</th>
+                                <th class="py-3">Player</th>
+                                <th class="py-3">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-body">
+                            </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer border-secondary justify-content-between" style="background-color: var(--bg-color);">
+                    <small class="opacity-50">Local Storage Active</small>
+                    <button id="clearLeaderboardBtn" class="btn btn-sm btn-outline-danger">Wipe Data</button>
                 </div>
             </div>
         </div>
     </div>
-  </main>
-  <div class="modal fade" id="leaderboardModal" tabindex="-1" role="dialog" aria-labelledby="leaderboardModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content text-dark">
-              <div class="modal-header">
-                  <h4 class="modal-title fw-bold" id="leaderboardModalLabel">TOP SCORES</h4>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                  <table class="table table-bordered text-center mb-0">
-                      <caption class="visually-hidden">Leaderboard showing top Snake Game scores</caption>
-                      <thead class="table-dark">
-                          <tr>
-                              <th>Rank</th>
-                              <th>Player</th>
-                              <th>Score</th>
-                          </tr>
-                      </thead>
-                      <tbody id="leaderboard-body">
-                      </tbody>
-                  </table>
-              </div>
-              <div class="modal-footer">
-                  <button type="button" class="btn btn-danger" id="clearLeaderboardBtn">Clear Leaderboard</button>
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-          </div>
-      </div>
-  </div>
-  <footer class="mt-5 pt-4 border-top text-center">
-      <div class="d-flex justify-content-center gap-3 flex-wrap">
-          <a href="https://github.com/AJuna345/snake-game" target="_blank" class="btn btn-outline-secondary btn-sm">
-              Game Repository on GitHub
-          </a>
-          <a href="https://github.com/AJuna345" target="_blank" class="btn btn-outline-secondary btn-sm">
-              GitHub Profile
-          </a>
-          <a href="https://ajuna345.github.io/AJuna345/" target="_blank" class="btn btn-outline-secondary btn-sm"> 
-              Dev Profile 
-          </a>
-          <!-- Nu HTML Validator link for my deployed page -->
-          <a href="https://validator.w3.org/nu/?doc=https://ajuna345.github.io/snake-game/" target="_blank" class="btn btn-outline-secondary btn-sm">
-              Nu Validator
-          </a>
-          <!-- WAVE Accessibility checker link for my deployed page -->
-          <a href="https://wave.webaim.org/report#/https://ajuna345.github.io/snake-game/" target="_blank" class="btn btn-outline-secondary btn-sm">
-              WAVE Checker
-          </a>
-      </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script type="module" src="scripts/game.js"></script>
-  <script src="scripts/leaderboard.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script type="module" src="scripts/storage.js"></script>
+    <script type="module" src="scripts/leaderboard.js"></script>
+    <script type="module" src="scripts/game.js"></script>
 </body>
 </html>
