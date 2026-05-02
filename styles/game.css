@@ -4,12 +4,11 @@
     --text-color: #333333;
     --snake-color: #28a745;
     --canvas-bg: #ffffff;
-    --border-color: #00b8d4; /* Default neon-blue food/border */
+    --border-color: #00b8d4; 
 }
 
 /* --- Theme Definitions --- */
 
-/* Classic Theme (Light) */
 body.theme-classic {
     --bg-color: #ecf0f1;
     --text-color: #333333;
@@ -18,7 +17,6 @@ body.theme-classic {
     --border-color: #00b8d4;
 }
 
-/* Dark Mode Theme */
 body.theme-dark {
     --bg-color: #1a1a1a;
     --text-color: #f8f9fa;
@@ -27,32 +25,25 @@ body.theme-dark {
     --border-color: #339af0;
 }
 
-/* Cyber Neon Theme */
 body.theme-neon {
     --bg-color: #000000;
-    --text-color: #39ff14; /* Neon Green */
+    --text-color: #39ff14; 
     --snake-color: #39ff14;
     --canvas-bg: #0a0a0a;
-    --border-color: #ff00ff; /* Neon Magenta */
+    --border-color: #ff00ff; 
 }
 
 /* Garfield Theme - High Contrast & Visibility Update */
 body.theme-garfield {
-    --bg-color: #fca311;           /* Bright Garfield Orange (HUD Background) */
-    --text-color: #000000;         /* High Contrast Black (Labels) */
-    --snake-color: #6d2301;        /* Deep Chocolate Brown (Score & Snake Body) */
-    --canvas-bg: #ffeaa7;          /* Cream/Yellow (Game Board) */
-    --border-color: #9d3a05;       /* Burnt Orange (Food & Canvas Border) */
-    --button-text-color: #000000;  /* Black text for buttons */
+    --bg-color: #fca311;           
+    --text-color: #000000;         
+    --snake-color: #6d2301;        
+    --canvas-bg: #ffeaa7;          
+    --border-color: #9d3a05;       
+    --button-text-color: #000000;  
 }
 
-/* Specific fix for HUD score & powerup visibility in Garfield mode */
-body.theme-garfield #hudScoreDisplay,
-body.theme-garfield #hudPowerupDisplay {
-    color: var(--snake-color) !important;
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
-}
-
+/* --- Global Styles --- */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -71,6 +62,14 @@ body {
 .hud-panel {
     background-color: var(--bg-color);
     border: 1px solid rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+/* Specific fix for HUD score & powerup visibility in Garfield mode */
+body.theme-garfield #hudScoreDisplay,
+body.theme-garfield #hudPowerupDisplay {
+    color: var(--snake-color) !important;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
 }
 
 body.theme-neon .hud-panel,
@@ -99,8 +98,12 @@ body.theme-garfield .hud-panel {
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     background-color: var(--canvas-bg);
-    /* Mobile scaling handled in game.js, but CSS provides fallback */
     max-width: 100%;
+    
+    /* Bulletproof Touch Locks - Prevents mobile browsers from zooming/scrolling on tap */
+    touch-action: none;
+    -webkit-touch-callout: none;
+    user-select: none;
 }
 
 body.theme-neon #game-board canvas {
@@ -128,7 +131,6 @@ body.theme-neon #game-board canvas {
     color: var(--text-color) !important;
 }
 
-/* Fix for Select Option colors in browser default menus */
 .text-dark {
     color: #212529 !important;
 }
@@ -145,7 +147,8 @@ body.theme-neon #game-board canvas {
     color: var(--bg-color);
 }
 
-/* Mobile Controls Styling (Shown only on small screens) */
+/* --- Mobile Controls Styling --- */
+/* Hide on Desktop */
 @media (min-width: 992px) {
     #mobileControls {
         display: none !important;
@@ -166,4 +169,33 @@ body.theme-neon #game-board canvas {
 
 #mobileControls .btn:active {
     filter: brightness(1.2);
+}
+
+/* --- Landscape Mobile Fix --- */
+@media (max-width: 991px) and (orientation: landscape) {
+    /* Turn the main right column into a flex row */
+    .col-lg-9 {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+    }
+    
+    /* Allow the game board card to take up the remaining space */
+    .col-lg-9 > .card {
+        flex: 1;
+        margin-bottom: 0 !important;
+    }
+
+    /* Move the D-Pad next to the board and prevent it from shrinking */
+    #mobileControls {
+        margin-top: 0 !important;
+        flex-shrink: 0;
+    }
+
+    /* Ensure the canvas height doesn't force a vertical scroll bar */
+    #game-board canvas {
+        max-height: 80vh;
+        width: auto;
+    }
 }
