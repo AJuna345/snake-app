@@ -110,7 +110,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" style="filter: invert(1); opacity: 0.5;"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <table class="table table-borderless table-hover mb-0 text-center" style="--bs-table-bg: transparent; --bs-table-color: var(--text-color);">
+                    <table class="table table-borderless mb-0 text-center" style="--bs-table-bg: transparent; --bs-table-color: var(--text-color);">
                         <thead class="border-bottom border-secondary opacity-75">
                             <tr>
                                 <th class="py-3">Rank</th>
@@ -122,8 +122,7 @@
                             </tbody>
                     </table>
                 </div>
-                <div class="modal-footer border-secondary justify-content-between" style="background-color: var(--bg-color);">
-                    <small class="opacity-50">Local Storage Active</small>
+                <div class="modal-footer border-secondary justify-content-end" style="background-color: var(--bg-color);">
                     <button id="clearLeaderboardBtn" class="btn btn-sm btn-outline-danger">Wipe Data</button>
                 </div>
             </div>
@@ -140,7 +139,7 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label fw-bold">Pilot Name</label>
-                        <input type="text" id="playerNameInput" class="form-control bg-transparent text-light border-secondary" placeholder="Enter your initials">
+                        <input type="text" id="playerNameInput" class="form-control bg-transparent border-secondary" style="color: var(--text-color);" placeholder="Enter your initials">
                     </div>
                     <div class="mb-3">
                         <label class="form-label fw-bold">UI Theme</label>
@@ -160,6 +159,10 @@
                             <option value="3" class="text-dark">Insane</option>
                         </select>
                     </div>
+                </div>
+                <div class="modal-footer border-secondary" style="background-color: var(--bg-color);">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveSettingsBtn" class="btn" style="background-color: var(--snake-color); color: var(--canvas-bg);" data-bs-dismiss="modal">Save Changes</button>
                 </div>
             </div>
         </div>
