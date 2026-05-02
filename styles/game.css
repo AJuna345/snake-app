@@ -36,14 +36,20 @@ body.theme-neon {
     --border-color: #ff00ff; /* Neon Magenta */
 }
 
-/* Garfield Theme (Updated for High Contrast) */
+/* Garfield Theme - High Contrast & Visibility Update */
 body.theme-garfield {
-    --bg-color: #fca311;           /* Garfield Orange */
-    --text-color: #000000;         /* High Contrast Black */
-    --snake-color: #e67e22;        /* Darker Orange */
-    --canvas-bg: #ffeaa7;          /* Cream/Yellow */
-    --border-color: #d35400;       /* Burnt Orange */
-    --button-text-color: #000000;  /* Fix for button contrast */
+    --bg-color: #fca311;           /* Bright Garfield Orange (HUD Background) */
+    --text-color: #000000;         /* High Contrast Black (Labels) */
+    --snake-color: #6d2301;        /* Deep Chocolate Brown (Score & Snake Body) */
+    --canvas-bg: #ffeaa7;          /* Cream/Yellow (Game Board) */
+    --border-color: #9d3a05;       /* Burnt Orange (Food & Canvas Border) */
+    --button-text-color: #000000;  /* Black text for buttons */
+}
+
+/* Specific fix for HUD score visibility in Garfield mode */
+body.theme-garfield #hudScoreDisplay {
+    color: var(--snake-color) !important;
+    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
 }
 
 /* --- Global Styles --- */
