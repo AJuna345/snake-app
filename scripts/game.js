@@ -252,11 +252,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const themeSelect = document.getElementById('themeSelect');
     const speedSelect = document.getElementById('speedSelect');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+    
+    // New hook for the HUD Player Name
+    const hudPlayerName = document.getElementById('hudPlayerName');
 
     let initialTheme = getTheme();
     let settingsSaved = false;
 
-    if (nameInput) nameInput.value = getPlayerName();
+    // Initialize UI values
+    const currentPlayerName = getPlayerName() || "Guest";
+    if (nameInput) nameInput.value = currentPlayerName;
+    if (hudPlayerName) hudPlayerName.innerText = currentPlayerName;
     if (themeSelect) themeSelect.value = initialTheme;
     if (speedSelect) speedSelect.value = getSpeed();
 
@@ -312,7 +318,12 @@ document.addEventListener("DOMContentLoaded", function() {
         saveSettingsBtn.addEventListener('click', function() {
             settingsSaved = true; 
             
-            if (nameInput) savePlayerName(nameInput.value);
+            if (nameInput) {
+                const newName = nameInput.value || "Guest";
+                savePlayerName(newName);
+                // Update the HUD instantly
+                if (hudPlayerName) hudPlayerName.innerText = newName; 
+            }
             
             if (themeSelect) {
                 const newTheme = themeSelect.value;
