@@ -235,7 +235,7 @@ function update() {
             setFood();
             
             // 20% chance to drop a mystery powerup when eating
-            if (Math.random() < 0.20) spawnPowerup();
+            if (Math.random() < 0.99) spawnPowerup();
 
         } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
             // Picked up a Mystery Powerup
