@@ -1,9 +1,16 @@
-/* Import the games fonts from Google. I like the classic 16 bit DotGothic16 better than Press Start 2P */
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=DotGothic16&display=swap');
+/* --- Root Variables & Default Theme (Classic) --- */
+:root {
+    --bg-color: #ecf0f1;
+    --text-color: #333333;
+    --snake-color: #28a745;
+    --canvas-bg: #ffffff;
+    --border-color: #00b8d4; /* Default neon-blue food/border */
+}
 
-/* Theme CSS Variables */
-:root, body.theme-classic {
+/* --- Theme Definitions --- */
+
+/* Classic Theme (Light) */
+body.theme-classic {
     --bg-color: #ecf0f1;
     --text-color: #333333;
     --snake-color: #28a745;
@@ -11,214 +18,146 @@
     --border-color: #00b8d4;
 }
 
+/* Dark Mode Theme */
 body.theme-dark {
-    --bg-color: #222222;
-    --text-color: #ffffff;
-    --snake-color: #8e4fd6;
-    --canvas-bg: #111111;
-    --border-color: #8e4fd6;
+    --bg-color: #1a1a1a;
+    --text-color: #f8f9fa;
+    --snake-color: #51cf66;
+    --canvas-bg: #2d2d2d;
+    --border-color: #339af0;
 }
 
+/* Cyber Neon Theme */
 body.theme-neon {
     --bg-color: #000000;
-    --text-color: #00ffff;
-    --snake-color: #ff00ff;
-    --canvas-bg: #000000;
-    --border-color: #00ffff;
+    --text-color: #39ff14; /* Neon Green */
+    --snake-color: #39ff14;
+    --canvas-bg: #0a0a0a;
+    --border-color: #ff00ff; /* Neon Magenta */
 }
 
-/* Set the font, colors, and spacing for the game */
+/* Garfield Theme (Updated for High Contrast) */
+body.theme-garfield {
+    --bg-color: #fca311;           /* Garfield Orange */
+    --text-color: #000000;         /* High Contrast Black */
+    --snake-color: #e67e22;        /* Darker Orange */
+    --canvas-bg: #ffeaa7;          /* Cream/Yellow */
+    --border-color: #d35400;       /* Burnt Orange */
+    --button-text-color: #000000;  /* Fix for button contrast */
+}
+
+/* --- Global Styles --- */
 body {
-    font-family: 'DotGothic16', 'Courier New', monospace;
-    text-align: center;
     background-color: var(--bg-color);
     color: var(--text-color);
-    transition: background-color 0.3s ease, color 0.3s ease;
-    margin: 0;
-    padding-bottom: 50px;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background-color 0.4s ease, color 0.4s ease;
+    min-height: 100vh;
 }
 
-/* Make the snake game buttons to look more like arcade buttons */
-.arcade-button {
-    font-family: 'DotGothic16', 'Courier New', monospace;
-    display: inline-block;
-    background-color: #e74c3c;
-    color: white;
-    padding: 15px 30px;
-    font-size: 20px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 8px;
-    border: 4px solid #c0392b;
-    box-shadow: 0px 6px 0px #c0392b;
-    transition: all 0.1s;
-    margin-top: 20px;
-    cursor: pointer;
+.site-title {
+    letter-spacing: 2px;
+    color: var(--text-color);
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
 
-.arcade-button:active {
-    box-shadow: 0px 0px 0px #c0392b;
-    transform: translateY(6px);
+/* --- Command Center / HUD Styles --- */
+.hud-panel {
+    background-color: var(--bg-color);
+    border: 1px solid rgba(0,0,0,0.05);
 }
 
-.arcade-button:hover {
-    background-color: #ff5e4d;
-    color: white;
+body.theme-neon .hud-panel,
+body.theme-dark .hud-panel {
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-.game-settings {
-    margin: 20px auto;
-    padding: 15px;
-    background-color: var(--canvas-bg);
+body.theme-garfield .hud-panel {
     border: 2px solid var(--border-color);
-    border-radius: 8px;
-    display: inline-block;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-canvas {
-    display: block;
-    margin: 20px auto;
-    border: 5px solid var(--border-color);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: border-color 0.3s ease;
+.tracking-wide {
+    letter-spacing: 0.1em;
+}
+
+/* --- Game Canvas & Containers --- */
+#game-board {
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-board canvas {
+    border: 4px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background-color: var(--canvas-bg);
+    /* Mobile scaling handled in game.js, but CSS provides fallback */
+    max-width: 100%;
+}
+
+body.theme-neon #game-board canvas {
+    box-shadow: 0 0 20px var(--snake-color);
+}
+
+/* --- Overlays (Start & Game Over) --- */
+#startScreen, #gameOverScreen {
+    border-radius: 8px;
+    transition: opacity 0.3s ease;
 }
 
 .hidden {
     display: none !important;
 }
 
-#gameOverScreen {
-    /* Center the Game Over screen */
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 10;
-    width: 80%;
-    max-width: 350px;
-    opacity: 1;
-    visibility: visible;
-    transition: opacity 0.4s ease, visibility 0.4s ease;
-    padding: 30px 20px;
-    background: rgba(0, 0, 0, 0.85);
-    color: white;
-    border: 2px solid #ff4444;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+/* --- Modal & Input Styling --- */
+.modal-content {
+    border: 1px solid rgba(255,255,255,0.1);
 }
 
-/* Hide the Game Over box until the game ends */
-#gameOverScreen.hidden {
-    display: block !important;
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none; /* Prevent users from clicking the invisible Play button */
-}
-
-/* Garfield Easter Egg theme */
-body.theme-garfield {
-    --bg-color: #ffa502;      
-    --text-color: #543200;    
-    --snake-color: #ffa502;   
-    --canvas-bg: #fff5e6;     
-    --border-color: #543200; 
-    --button-text-color: #000000;
-}
-
-/* Make Sidebar Cards match the theme colors */
-.card {
-    background-color: var(--canvas-bg);
-    border: 2px solid var(--border-color);
-    color: var(--text-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
-}
-
-/* Make the navbar use the theme colors */
-.navbar {
-    background-color: var(--bg-color);
-}
-
-.navbar .nav-link.header-link,
-.navbar .navbar-brand {
+.form-select, .form-control {
+    background-color: rgba(255,255,255,0.05) !important;
+    border-color: var(--border-color) !important;
     color: var(--text-color) !important;
 }
 
-.navbar .nav-link.header-link:hover,
-.navbar .nav-link.header-link:focus {
-    color: var(--snake-color) !important;
+/* Fix for Select Option colors in browser default menus */
+.text-dark {
+    color: #212529 !important;
 }
 
-.navbar-toggler {
+/* --- Button Enhancements --- */
+.btn-outline-secondary {
     border-color: var(--border-color);
-}
-
-.navbar-toggler-icon {
-    filter: brightness(0) saturate(100%);
-}
-
-/* Make the keyboard key icons match the theme */
-kbd {
-    font-family: 'DotGothic16', 'Courier New', monospace;
-    background-color: var(--border-color);
-    color: var(--canvas-bg);
-    padding: 2px 5px;
-    font-size: 0.9rem;
-}
-
-/* Make the links at the bottom match the theme */
-footer .btn-outline-secondary {
-    font-family: 'DotGothic16', 'Courier New', monospace;
-    font-size: 12px;
     color: var(--text-color);
-    border-color: var(--border-color);
 }
 
-footer .btn-outline-secondary:hover {
+.btn-outline-secondary:hover {
     background-color: var(--border-color);
-    color: var(--canvas-bg);
+    border-color: var(--border-color);
+    color: var(--bg-color);
 }
 
-/* W3C Selectors spec: https://www.w3.org/TR/selectors-4/#the-nth-child-pseudo */
-/* Advanced Selector: Selects odd-numbered list items */
-/* Changes the opacity of every other control item to make it look more interesting */
-.card ul li:nth-child(odd) {
-    opacity: 0.85;
-}
-
-/* W3C Selectors spec: https://www.w3.org/TR/selectors-4/#attribute-selectors */
-/* Advanced Selector: Finds links with target="_blank" */
-/* Highlights links that open a new tab */
-a[target="_blank"] {
-    text-decoration: underline;
-}
-
-/* Hide keyboard touch controls on desktop */
-#mobileControls {
-    display: none;
-}
-
-/* Show keybaord touch controls on smaller screens */
-@media (max-width: 768px) {
+/* Mobile Controls Styling (Shown only on small screens) */
+@media (min-width: 992px) {
     #mobileControls {
-        display: block;
-    }
-
-    #mobileControls .btn {
-        min-width: 60px;
-        font-size: 1.5rem;
+        display: none !important;
     }
 }
 
-/* Include a reduced-motion friendly animation or transition (respect prefers-reduced-motion) */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+#mobileControls .btn {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    background-color: var(--border-color);
+    border: none;
+    color: var(--bg-color);
+}
+
+#mobileControls .btn:active {
+    filter: brightness(1.2);
 }
