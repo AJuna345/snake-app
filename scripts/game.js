@@ -14,14 +14,14 @@ var EMPTY = 0, SNAKE = 1, FOOD = 2;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
-var speed = 7; // Default speed (Normal)
-var foodScore = 1; // Increase scores with higher difficulty levels/speeds
+var speed = 7; 
+var foodScore = 1; // Will dynamically update based on speed
 
 // Default Theme Colors
 var snakeColor = "#28a745";
 var canvasBg = "#ffffff";
 var textColor = "#333333";
-var borderColor = "#333333"; // Used for food color
+var borderColor = "#333333"; 
 
 // Get the CSS theme colors to make the game match the selected theme
 function updateThemeColors() {
@@ -91,8 +91,14 @@ function main() {
 function initGame() {
     score = 0; 
     gameOver = false;
-    frames = 0;           // Initialize frames so speed math works
-    speed = getSpeed();   // Pull the player's saved speed setting
+    frames = 0;           
+    speed = getSpeed();   
+
+    // Higher difficulty (lower speed number) = higher points per food
+    if (speed >= 10)     foodScore = 1;  // Slow
+    else if (speed >= 7) foodScore = 2;  // Normal
+    else if (speed >= 5) foodScore = 3;  // Fast
+    else                 foodScore = 5;  // Insane
 
     grid.init(EMPTY, WIDTH, HEIGHT);
     var sp = {x:Math.floor(WIDTH/2), y:HEIGHT-1};
@@ -106,7 +112,7 @@ function initGame() {
 }
 
 function loop() {
-    updateThemeColors(); // Ensure colors update if theme changes mid-game
+    updateThemeColors(); 
     update();
     draw();
     if (!gameOver) { window.requestAnimationFrame(loop, canvas); }
@@ -128,21 +134,18 @@ function update() {
             case DOWN:  ny++; break;
         }
 
-        // Collision detection (Walls or self)
         if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE) {
             gameOver = true;
             saveHighScore(getPlayerName(), score);
-            // Trigger Bootstrap d-none toggle to show Game Over screen
             document.getElementById("gameOverScreen").classList.remove("d-none");
             document.getElementById("finalScore").innerText = score;
             return;
         }
 
-        // Eating food
         if (grid.get(nx, ny) === FOOD) {
             score += foodScore;
             const hudScore = document.getElementById("hudScoreDisplay");
-            if (hudScore) hudScore.innerText = score; // Update left-hand HUD
+            if (hudScore) hudScore.innerText = score; 
             setFood();
         } else {
             var tail = snake.remove();
@@ -157,61 +160,57 @@ function draw() {
     var tw = canvas.width/grid.width;
     var th = canvas.height/grid.height;
 
-    // Helper to determine contrast color for eyes/stems based on background
     var contrastColor = canvasBg === "#ffffff" || canvasBg === "#ecf0f1" ? "#000000" : "#ffffff";
 
     for (var x=0; x < grid.width; x++) {
         for (var y=0; y < grid.height; y++) {
             var val = grid.get(x, y);
             
-            // Draw Background Tiles
-            ctx.shadowBlur = 0; // Reset shadow for background
+            ctx.shadowBlur = 0; 
             ctx.fillStyle = canvasBg;
             ctx.fillRect(x*tw, y*th, tw, th);
 
             if (val === SNAKE) {
                 if (x === snake.last.x && y === snake.last.y) {
-                    // Draw Neon Tech Snake Head
+                    // Head
                     ctx.shadowBlur = 10;
                     ctx.shadowColor = snakeColor;
                     ctx.fillStyle = snakeColor;
                     ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                     
-                    // Draw Glowing Eyes based on direction
+                    // Eyes
                     ctx.shadowBlur = 5;
                     ctx.fillStyle = contrastColor;
                     if (snake.direction === UP || snake.direction === DOWN) {
-                        ctx.fillRect(x*tw + 4, y*th + th/2 - 2, 4, 4); // Left eye
-                        ctx.fillRect(x*tw + tw - 8, y*th + th/2 - 2, 4, 4); // Right eye
+                        ctx.fillRect(x*tw + 4, y*th + th/2 - 2, 4, 4); 
+                        ctx.fillRect(x*tw + tw - 8, y*th + th/2 - 2, 4, 4); 
                     } else {
-                        ctx.fillRect(x*tw + tw/2 - 2, y*th + 4, 4, 4); // Top eye
-                        ctx.fillRect(x*tw + tw/2 - 2, y*th + th - 8, 4, 4); // Bottom eye
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + 4, 4, 4); 
+                        ctx.fillRect(x*tw + tw/2 - 2, y*th + th - 8, 4, 4); 
                     }
                 } else {
-                    // Draw Neon Tech Body Segment
+                    // Body
                     ctx.shadowBlur = 8;
                     ctx.shadowColor = snakeColor;
                     ctx.fillStyle = snakeColor;
                     ctx.fillRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                     
-                    // Internal Digital Grid Lines (cutout using background color)
+                    // Internal Grid
                     ctx.shadowBlur = 0;
                     ctx.fillStyle = canvasBg;
-                    ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, th - 4); // Vertical line
-                    ctx.fillRect(x*tw + 2, y*th + th/2 - 1, tw - 4, 2); // Horizontal line
+                    ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, th - 4); 
+                    ctx.fillRect(x*tw + 2, y*th + th/2 - 1, tw - 4, 2); 
                 }
             } else if (val === FOOD) {
-                // Draw Neon Apple (Food) using the border color
+                // Food
                 ctx.shadowBlur = 15;
                 ctx.shadowColor = borderColor;
                 ctx.fillStyle = borderColor;
                 
-                // Apple body (circle)
                 ctx.beginPath();
                 ctx.arc(x*tw + tw/2, y*th + th/2 + 2, tw/2 - 4, 0, 2 * Math.PI);
                 ctx.fill();
                 
-                // Apple Stem
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = contrastColor;
                 ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, 4);
@@ -220,7 +219,6 @@ function draw() {
     }
 }
 
-// DOM Interaction and Event Listeners
 document.addEventListener("DOMContentLoaded", function() {
     const startBtn = document.getElementById("startBtn");
     const restartBtn = document.getElementById("restartBtn");
@@ -235,16 +233,13 @@ document.addEventListener("DOMContentLoaded", function() {
     const speedSelect = document.getElementById('speedSelect');
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
 
-    // State tracking for the theme preview
     let initialTheme = getTheme();
     let settingsSaved = false;
 
-    // Load initial values into UI
     if (nameInput) nameInput.value = getPlayerName();
     if (themeSelect) themeSelect.value = initialTheme;
     if (speedSelect) speedSelect.value = getSpeed();
 
-    // Start & Restart Logic
     if (startBtn) {
         startBtn.addEventListener("click", function() {
             document.getElementById("startScreen").classList.add("d-none");
@@ -271,13 +266,11 @@ document.addEventListener("DOMContentLoaded", function() {
     // --- Fixed Settings & Preview Logic ---
 
     if (settingsModal) {
-        // Reset the flag and capture the current theme whenever the modal opens
         settingsModal.addEventListener('show.bs.modal', function () {
             initialTheme = getTheme();
             settingsSaved = false;
         });
 
-        // Revert only if the user didn't click "Save Changes"
         settingsModal.addEventListener('hide.bs.modal', function () {
             if (!settingsSaved) {
                 document.body.className = `theme-${initialTheme}`;
@@ -288,7 +281,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Theme Preview: Apply changes to the UI immediately
     if (themeSelect) {
         themeSelect.addEventListener('change', function(e) {
             const previewTheme = e.target.value;
@@ -298,19 +290,16 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    // Save Changes: Lock in the new settings
+    // Fixed Save Logic - Now controls the modal manually!
     if (saveSettingsBtn) {
         saveSettingsBtn.addEventListener('click', function() {
-            // 1. Immediately set the flag so the 'hide' event knows not to revert
             settingsSaved = true; 
             
-            // 2. Persist the data
             if (nameInput) savePlayerName(nameInput.value);
             
             if (themeSelect) {
                 const newTheme = themeSelect.value;
                 saveTheme(newTheme);
-                // Update our baseline so future cancels revert to THIS theme
                 initialTheme = newTheme; 
                 document.body.className = `theme-${newTheme}`;
             }
@@ -319,12 +308,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 const newSpeed = parseInt(speedSelect.value, 10);
                 saveSpeed(newSpeed);
                 speed = newSpeed;
+                
+                // Update multiplier dynamically if game is running
+                if (speed >= 10) foodScore = 1;
+                else if (speed >= 7) foodScore = 2;
+                else if (speed >= 5) foodScore = 3;
+                else foodScore = 5;
             }
 
-            // 3. Ensure the canvas reflects the saved state
             updateThemeColors();
             if (canvas && ctx) draw();
+            
+            // Programmatically hide the modal using Bootstrap's built-in global object
+            const modalInstance = window.bootstrap.Modal.getInstance(settingsModal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
         });
     }
 });
-
