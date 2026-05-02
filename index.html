@@ -66,13 +66,14 @@
 
                         <hr class="border-secondary opacity-25">
 
-                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
-                            🏆 GLOBAL LEADERBOARD
-                        </button>
-                        
-                        <button type="button" class="btn btn-outline-secondary w-100 fw-bold mt-2" data-bs-toggle="modal" data-bs-target="#settingsModal">
-                            ⚙️ GAME SETTINGS
-                        </button>
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
+                                🏆 GLOBAL LEADERBOARD
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary fw-bold" data-bs-toggle="modal" data-bs-target="#settingsModal">
+                                ⚙️ GAME SETTINGS
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -142,7 +143,7 @@
                         <input type="text" id="playerNameInput" class="form-control bg-transparent border-secondary" style="color: var(--text-color);" placeholder="Enter your initials">
                     </div>
                     <div class="mb-3">
-                        <label class="form-label fw-bold">UI Theme</label>
+                        <label class="form-label fw-bold">Theme</label>
                         <select id="themeSelect" class="form-select bg-transparent border-secondary" style="color: var(--text-color);">
                             <option value="classic" class="text-dark">Classic</option>
                             <option value="dark" class="text-dark">Dark Mode</option>
