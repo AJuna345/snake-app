@@ -10,13 +10,19 @@ import {
 } from './storage.js';
 
 var WIDTH = 26, HEIGHT = 26; // Width and height of the game board
-var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3;
+// Added the 3 new powerup tile types
+var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3, SCORE2X = 4, NEWWALLS = 5, SLOWMO = 6;
 var LEFT  = 0, RIGHT = 1, UP = 2, DOWN  = 3;
 var KEY_LEFT = 37, KEY_RIGHT = 39, KEY_UP = 38, KEY_DOWN  = 40;
 var canvas, ctx, keystate, frames, score, gameOver; 
+var baseSpeed = 7; // Tracks the chosen difficulty setting
 var speed = 7; 
-var foodScore = 1; // Will dynamically update based on speed
-var changingDirection = false; // Added to prevent double-turn suicide bug
+var foodScore = 1; 
+var changingDirection = false; 
+
+// Powerup tracking variables
+var activePowerup = null;
+var powerupTimer = 0;
 
 // Default Theme Colors
 var snakeColor = "#28a745";
@@ -24,7 +30,7 @@ var canvasBg = "#ffffff";
 var textColor = "#333333";
 var borderColor = "#333333"; 
 
-// Get the CSS theme colors to make the game match the selected theme
+// Get the CSS theme colors
 function updateThemeColors() {
     const computedStyle = getComputedStyle(document.body);
     snakeColor = computedStyle.getPropertyValue('--snake-color').trim() || "#28a745";
@@ -67,8 +73,25 @@ function setFood() {
             if (grid.get(x, y) === EMPTY) { empty.push({x:x, y:y}); }
         }
     }
-    var randpos = empty[Math.floor(Math.random()*empty.length)];
-    grid.set(FOOD, randpos.x, randpos.y);
+    if (empty.length > 0) {
+        var randpos = empty[Math.floor(Math.random()*empty.length)];
+        grid.set(FOOD, randpos.x, randpos.y);
+    }
+}
+
+// --- Spawns a random mystery powerup ---
+function spawnPowerup() {
+    var empty = [];
+    for (var x=0; x < grid.width; x++) {
+        for (var y=0; y < grid.height; y++) {
+            if (grid.get(x, y) === EMPTY) { empty.push({x:x, y:y}); }
+        }
+    }
+    if (empty.length > 0) {
+        var randpos = empty[Math.floor(Math.random()*empty.length)];
+        var pType = Math.floor(Math.random() * 3) + 4; // Picks 4, 5, or 6
+        grid.set(pType, randpos.x, randpos.y);
+    }
 }
 
 function main() {
@@ -99,34 +122,28 @@ function updateHighScoreHUD() {
     if (hudHighScore) hudHighScore.innerText = topScore;
 }
 
-// --- NEW FUNCTION: Random Wall Generator ---
 function generateRandomWalls(numWalls) {
-    // Determine where the snake starts so we don't box it in
     var spawnX = Math.floor(WIDTH / 2);
     var spawnY = HEIGHT - 1;
 
     for (var i = 0; i < numWalls; i++) {
-        // Random length between 2 and 5
         var length = Math.floor(Math.random() * 4) + 2; 
-        var isHorizontal = Math.random() < 0.5; // 50/50 chance for horizontal or vertical
+        var isHorizontal = Math.random() < 0.5; 
         
         var startX = Math.floor(Math.random() * WIDTH);
         var startY = Math.floor(Math.random() * HEIGHT);
 
-        // Adjust bounds if the random wall tries to draw outside the grid
         if (isHorizontal && startX + length > WIDTH) startX = WIDTH - length;
         if (!isHorizontal && startY + length > HEIGHT) startY = HEIGHT - length;
 
-        // Draw the individual blocks of the wall
         for (var j = 0; j < length; j++) {
             var wx = isHorizontal ? startX + j : startX;
             var wy = isHorizontal ? startY : startY + j;
             
-            // Only place a wall if the space is totally empty
             if (grid.get(wx, wy) === EMPTY) {
-                // SAFE ZONE CHECK: Ensure we don't spawn a wall within a 4-block radius of the snake's start
+                // Ensure we don't spawn a wall within a 4-block radius of the snake's start
                 if (Math.abs(wx - spawnX) < 4 && Math.abs(wy - spawnY) < 4) {
-                    continue; // Skip drawing this specific block to leave room to move
+                    continue; 
                 }
                 grid.set(WALL, wx, wy);
             }
@@ -138,12 +155,16 @@ function initGame() {
     score = 0; 
     gameOver = false;
     frames = 0;           
-    speed = getSpeed();   
+    baseSpeed = getSpeed();   
+    speed = baseSpeed;
     changingDirection = false; 
+    
+    activePowerup = null;
+    powerupTimer = 0;
 
-    if (speed >= 10) foodScore = 1;      
-    else if (speed >= 7) foodScore = 2;  
-    else if (speed >= 5) foodScore = 3;  
+    if (baseSpeed >= 10) foodScore = 1;      
+    else if (baseSpeed >= 7) foodScore = 2;  
+    else if (baseSpeed >= 5) foodScore = 3;  
     else foodScore = 5;                  
 
     grid.init(EMPTY, WIDTH, HEIGHT);
@@ -151,10 +172,8 @@ function initGame() {
     snake.init(UP, sp.x, sp.y);
     grid.set(SNAKE, sp.x, sp.y);
     
-    // Call the new generator to spawn 6 random walls
     generateRandomWalls(6); 
-    
-    setFood(); // Set food AFTER walls so food doesn't spawn inside a wall
+    setFood(); 
     
     const hudScore = document.getElementById("hudScoreDisplay");
     if (hudScore) hudScore.innerText = score;
@@ -170,6 +189,16 @@ function loop() {
 
 function update() {
     frames++;
+    
+    // Process active powerup timers
+    if (powerupTimer > 0) {
+        powerupTimer--;
+        if (powerupTimer === 0) {
+            // Reset active powerup states
+            activePowerup = null;
+            speed = baseSpeed; // Ends SLOWMO
+        }
+    }
     
     if (!changingDirection) {
         if (keystate[KEY_LEFT] && snake.direction !== RIGHT) { snake.direction = LEFT; changingDirection = true; }
@@ -187,7 +216,6 @@ function update() {
             case DOWN:  ny++; break;
         }
 
-        // Check for wall collisions in addition to out-of-bounds and self-collisions
         if (0 > nx || nx > grid.width-1 || 0 > ny || ny > grid.height-1 || grid.get(nx, ny) === SNAKE || grid.get(nx, ny) === WALL) {
             gameOver = true;
             saveHighScore(getPlayerName(), score);
@@ -196,15 +224,41 @@ function update() {
             return;
         }
 
-        if (grid.get(nx, ny) === FOOD) {
-            score += foodScore;
+        let targetVal = grid.get(nx, ny);
+
+        if (targetVal === FOOD) {
+            // Apply 2X Score Multiplier if active
+            score += (activePowerup === SCORE2X) ? (foodScore * 2) : foodScore;
             const hudScore = document.getElementById("hudScoreDisplay");
             if (hudScore) hudScore.innerText = score; 
+            
             setFood();
+            
+            // 20% chance to drop a mystery powerup when eating
+            if (Math.random() < 0.20) spawnPowerup();
+
+        } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
+            // Picked up a Mystery Powerup
+            if (targetVal === SCORE2X) {
+                activePowerup = SCORE2X;
+                powerupTimer = 600; // 10 seconds (assuming 60 fps)
+            } else if (targetVal === NEWWALLS) {
+                generateRandomWalls(2); // Instantly drop 2 new walls to surprise them
+            } else if (targetVal === SLOWMO) {
+                activePowerup = SLOWMO;
+                powerupTimer = 600;
+                speed = baseSpeed + 4; // Increases frames between moves = Slower Snake
+            }
+            
+            // Powerups don't grow the snake, just replace the tail
+            var tail = snake.remove();
+            grid.set(EMPTY, tail.x, tail.y);
+            
         } else {
             var tail = snake.remove();
             grid.set(EMPTY, tail.x, tail.y);
         }
+        
         grid.set(SNAKE, nx, ny);
         snake.insert(nx, ny);
         
@@ -265,24 +319,40 @@ function draw() {
                 ctx.shadowBlur = 0;
                 ctx.fillStyle = contrastColor;
                 ctx.fillRect(x*tw + tw/2 - 1, y*th + 2, 2, 4);
+                
             } else if (val === WALL) {
-                // Draw Outlined Wall / Crate
                 ctx.shadowBlur = 0; 
                 ctx.fillStyle = canvasBg; 
                 ctx.fillRect(x*tw, y*th, tw, th); 
                 
-                // Outline
                 ctx.strokeStyle = borderColor; 
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
                 
-                // Inner structural "X"
                 ctx.beginPath();
                 ctx.moveTo(x*tw + 2, y*th + 2);
                 ctx.lineTo(x*tw + tw - 2, y*th + th - 2);
                 ctx.moveTo(x*tw + tw - 2, y*th + 2);
                 ctx.lineTo(x*tw + 2, y*th + th - 2);
                 ctx.stroke();
+                
+            } else if (val >= SCORE2X && val <= SLOWMO) {
+                // Mystery Powerups are drawn identically to trick the player!
+                ctx.shadowBlur = 15;
+                ctx.shadowColor = "#f1c40f"; // Glowing Gold
+                ctx.fillStyle = "#f39c12";
+                
+                // Draw a pulsing diamond shape
+                ctx.beginPath();
+                ctx.moveTo(x*tw + tw/2, y*th + 2);
+                ctx.lineTo(x*tw + tw - 2, y*th + th/2);
+                ctx.lineTo(x*tw + tw/2, y*th + th - 2);
+                ctx.lineTo(x*tw + 2, y*th + th/2);
+                ctx.fill();
+                
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = "#ffffff";
+                ctx.fillRect(x*tw + tw/2 - 2, y*th + th/2 - 2, 4, 4);
             }
         }
     }
@@ -379,11 +449,12 @@ document.addEventListener("DOMContentLoaded", function() {
             if (speedSelect) {
                 const newSpeed = parseInt(speedSelect.value, 10);
                 saveSpeed(newSpeed);
+                baseSpeed = newSpeed;
                 speed = newSpeed;
                 
-                if (speed >= 10) foodScore = 1;
-                else if (speed >= 7) foodScore = 2;
-                else if (speed >= 5) foodScore = 3;
+                if (baseSpeed >= 10) foodScore = 1;
+                else if (baseSpeed >= 7) foodScore = 2;
+                else if (baseSpeed >= 5) foodScore = 3;
                 else foodScore = 5;
             }
 
