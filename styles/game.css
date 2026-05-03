@@ -7,14 +7,13 @@
     --border-color: #00b8d4; 
 }
 
-/* --- Theme Definitions --- */
-
-body.theme-classic {
-    --bg-color: #ecf0f1;
-    --text-color: #333333;
-    --snake-color: #28a745;
+/* Theme Colors */
+.theme-classic {
+    --bg-color: #f8f9fa;
+    --text-color: #212529;
+    --snake-color: #1e7e34;
     --canvas-bg: #ffffff;
-    --border-color: #00b8d4;
+    --border-color: #343a40;
 }
 
 body.theme-dark {
