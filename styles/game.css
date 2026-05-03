@@ -81,6 +81,26 @@ body.theme-garfield .hud-panel {
     border: 2px solid var(--border-color);
 }
 
+/* UNcaffeinated Coffee Theme */
+body.theme-uncaffeinated {
+    --bg-color: #2c1e16;           
+    --text-color: #f3e5ab;         
+    --snake-color: #d35400;        
+    --canvas-bg: #3e2723;          
+    --border-color: #f39c12;       
+    --button-text-color: #ffffff;
+}
+
+/* UNA Pride Theme (Official Purple & Gold) */
+body.theme-una {
+    --bg-color: #f0f0f5;           
+    --text-color: #592B8A;         /* UNA Purple */
+    --snake-color: #FFB92A;        /* UNA Gold */
+    --canvas-bg: #ffffff;          
+    --border-color: #592B8A;       /* UNA Purple */
+    --button-text-color: #592B8A;  /* Purple text on Gold buttons */
+}
+
 .tracking-wide {
     letter-spacing: 0.1em;
 }
