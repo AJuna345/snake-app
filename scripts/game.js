@@ -19,9 +19,13 @@ var speed = 7;
 var foodScore = 1; 
 var changingDirection = false; 
 
-// Powerup tracking variables
+// Active Powerup tracking variables (The effect on the player)
 var activePowerup = null;
 var powerupTimer = 0;
+
+// Board Powerup tracking variables (The item sitting on the grid)
+var boardPowerupPos = null;
+var boardPowerupTimer = 0;
 
 // Default Theme Colors
 var snakeColor = "#28a745";
@@ -77,6 +81,9 @@ function setFood() {
 }
 
 function spawnPowerup() {
+    // Prevent spawning a new one if there is already an active mystery box on the board
+    if (boardPowerupPos !== null) return;
+
     var empty = [];
     for (var x=0; x < grid.width; x++) {
         for (var y=0; y < grid.height; y++) {
@@ -87,10 +94,14 @@ function spawnPowerup() {
         var randpos = empty[Math.floor(Math.random()*empty.length)];
         var pType = Math.floor(Math.random() * 3) + 4; 
         grid.set(pType, randpos.x, randpos.y);
+
+        // Track the grid location and start the 10-second (600 frames) expiration timer
+        boardPowerupPos = { x: randpos.x, y: randpos.y };
+        boardPowerupTimer = 600;
     }
 }
 
-function updatePowerupHUD(text) {
+function updatePowerupText(text) {
     const container = document.getElementById('powerupContainer');
     const display = document.getElementById('hudPowerupDisplay');
     if (container && display) {
@@ -111,9 +122,9 @@ function main() {
     canvas = document.createElement("canvas");
     canvas.width = WIDTH*20; canvas.height = HEIGHT*20;
     
-    // Applying scaling here (touch-action moved to CSS for stability)
     canvas.style.maxWidth = "100%";
     canvas.style.height = "auto";
+    canvas.style.touchAction = "none"; 
     
     ctx = canvas.getContext("2d");
     board.appendChild(canvas);
@@ -122,8 +133,8 @@ function main() {
     document.addEventListener("keydown", function(evt) { keystate[evt.keyCode] = true; });
     document.addEventListener("keyup", function(evt) { delete keystate[evt.keyCode]; });
     
-    // --- UPDATED BULLETPROOF MOBILE & DESKTOP INPUT HANDLER ---
-    function handleInput(e) {
+    // --- BULLETPROOF MOBILE & DESKTOP INPUT HANDLER ---
+    function handlePlayerInput(e) {
         if (gameOver || snake.last === null) return;
         if (changingDirection) return;
 
@@ -135,7 +146,6 @@ function main() {
         const rect = canvas.getBoundingClientRect();
         let clientX, clientY;
 
-        // Safe extraction of coordinates across all device types
         if (e.touches && e.touches.length > 0) {
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
@@ -169,15 +179,14 @@ function main() {
         }
     }
 
-    // Attach to both touch devices and standard mouse clicks
-    canvas.addEventListener("touchstart", handleInput, { passive: false });
-    canvas.addEventListener("mousedown", handleInput);
+    canvas.addEventListener("touchstart", handlePlayerInput, { passive: false });
+    canvas.addEventListener("mousedown", handlePlayerInput);
     
     initGame();
-    loop();
+    gameLoop();
 }
 
-function updateHighScoreHUD() {
+function updateHighScore() {
     const highScores = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
     const topScore = highScores.length > 0 ? highScores[0].score : 0;
     const hudHighScore = document.getElementById("hudHighScoreDisplay");
@@ -223,7 +232,11 @@ function initGame() {
     activePowerup = null;
     powerupTimer = 0;
     
-    updatePowerupHUD(null); 
+    // Clear board item tracking
+    boardPowerupPos = null;
+    boardPowerupTimer = 0;
+    
+    updatePowerupText(null); 
 
     if (baseSpeed >= 10) foodScore = 1;      
     else if (baseSpeed >= 7) foodScore = 2;  
@@ -240,25 +253,39 @@ function initGame() {
     
     const hudScore = document.getElementById("hudScoreDisplay");
     if (hudScore) hudScore.innerText = score;
-    updateHighScoreHUD();
+    updateHighScore();
 }
 
-function loop() {
+function gameLoop() {
     updateThemeColors(); 
     update();
     draw();
-    if (!gameOver) { window.requestAnimationFrame(loop, canvas); }
+    if (!gameOver) { window.requestAnimationFrame(gameLoop, canvas); }
 }
 
 function update() {
     frames++;
     
+    // Process active powerup effect on the player
     if (powerupTimer > 0) {
         powerupTimer--;
         if (powerupTimer === 0) {
             activePowerup = null;
             speed = baseSpeed; 
-            updatePowerupHUD(null); 
+            updatePowerupText(null); 
+        }
+    }
+
+    // Process expiration of mystery boxes sitting on the game board
+    if (boardPowerupTimer > 0) {
+        boardPowerupTimer--;
+        if (boardPowerupTimer === 0 && boardPowerupPos !== null) {
+            // Verify the tile is still a power-up (it hasn't been eaten or overwritten)
+            let currentTile = grid.get(boardPowerupPos.x, boardPowerupPos.y);
+            if (currentTile >= SCORE2X && currentTile <= SLOWMO) {
+                grid.set(EMPTY, boardPowerupPos.x, boardPowerupPos.y);
+            }
+            boardPowerupPos = null;
         }
     }
     
@@ -298,20 +325,24 @@ function update() {
             if (Math.random() < 0.90) spawnPowerup();
 
         } else if (targetVal >= SCORE2X && targetVal <= SLOWMO) {
+            // Picked up a Mystery Powerup! Clear the board tracking variables.
+            boardPowerupPos = null;
+            boardPowerupTimer = 0;
+
             if (targetVal === SCORE2X) {
                 activePowerup = SCORE2X;
                 powerupTimer = 600; 
-                updatePowerupHUD("Double Score!");
+                updatePowerupText("Double Score!");
             } else if (targetVal === NEWWALLS) {
                 generateRandomWalls(2); 
                 activePowerup = NEWWALLS;
                 powerupTimer = 600; 
-                updatePowerupHUD("New Walls!?!");
+                updatePowerupText("New Walls!?!");
             } else if (targetVal === SLOWMO) {
                 activePowerup = SLOWMO;
                 powerupTimer = 600; 
                 speed = baseSpeed + 4; 
-                updatePowerupHUD("Slow Mo");
+                updatePowerupText("Slow Mo");
             }
             
             var tail = snake.remove();
@@ -385,19 +416,17 @@ function draw() {
                 
             } else if (val === WALL) {
                 ctx.shadowBlur = 0; 
-                ctx.fillStyle = canvasBg; 
+                
+                // Draw filled box with half transparency
+                ctx.globalAlpha = 0.5;
+                ctx.fillStyle = borderColor; 
                 ctx.fillRect(x*tw, y*th, tw, th); 
                 
+                // Draw outline with full opacity
+                ctx.globalAlpha = 1.0;
                 ctx.strokeStyle = borderColor; 
                 ctx.lineWidth = 2;
                 ctx.strokeRect(x*tw + 2, y*th + 2, tw - 4, th - 4);
-                
-                ctx.beginPath();
-                ctx.moveTo(x*tw + 2, y*th + 2);
-                ctx.lineTo(x*tw + tw - 2, y*th + th - 2);
-                ctx.moveTo(x*tw + tw - 2, y*th + 2);
-                ctx.lineTo(x*tw + 2, y*th + th - 2);
-                ctx.stroke();
                 
             } else if (val >= SCORE2X && val <= SLOWMO) {
                 ctx.shadowBlur = 15;
@@ -430,6 +459,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const saveSettingsBtn = document.getElementById('saveSettingsBtn');
     const hudPlayerName = document.getElementById('hudPlayerName');
 
+    const upBtn = document.getElementById("upBtn");
+    const downBtn = document.getElementById("downBtn");
+    const leftBtn = document.getElementById("leftBtn");
+    const rightBtn = document.getElementById("rightBtn");
+
     let initialTheme = getTheme();
     let settingsSaved = false;
 
@@ -452,9 +486,16 @@ document.addEventListener("DOMContentLoaded", function() {
         restartBtn.addEventListener("click", function() {
             document.getElementById("gameOverScreen").classList.add("d-none"); 
             initGame(); 
-            loop(); 
+            gameLoop(); 
         });
     }
+
+    // Attach mobile D-Pad controls as an alternative/fallback if they exist in the HTML layout
+    if (upBtn) upBtn.addEventListener("click", () => { if (snake.direction !== DOWN && !changingDirection) { snake.direction = UP; changingDirection = true; }});
+    if (downBtn) downBtn.addEventListener("click", () => { if (snake.direction !== UP && !changingDirection) { snake.direction = DOWN; changingDirection = true; }});
+    if (leftBtn) leftBtn.addEventListener("click", () => { if (snake.direction !== RIGHT && !changingDirection) { snake.direction = LEFT; changingDirection = true; }});
+    if (rightBtn) rightBtn.addEventListener("click", () => { if (snake.direction !== LEFT && !changingDirection) { snake.direction = RIGHT; changingDirection = true; }});
+
 
     if (settingsModal) {
         settingsModal.addEventListener('show.bs.modal', function () {
