@@ -33,6 +33,15 @@
                     
                     <div class="card-body d-flex flex-column gap-4 p-4">
                         
+                        <div class="d-grid gap-2">
+                            <button id="startBtn" class="btn btn-lg fw-bold border-0" style="background-color: var(--snake-color); color: var(--button-text-color, var(--canvas-bg));">
+                                ▶ START GAME
+                            </button>
+                            <button id="restartBtn" class="btn btn-lg fw-bold btn-outline-secondary d-none">
+                                ↺ NEW GAME
+                            </button>
+                        </div>
+
                         <div class="hud-panel p-3 rounded-3" style="background-color: var(--bg-color);">
                             <h6 class="text-uppercase mb-1 opacity-75" style="color: var(--text-color);">Snake Wrangler</h6>
                             <h4 id="hudPlayerName" class="fw-bold mb-4 text-truncate" style="color: var(--text-color);">Guest</h4>
@@ -47,15 +56,6 @@
                                 <h6 class="text-uppercase mb-1 opacity-75" style="color: var(--text-color);">Active Power-Up</h6>
                                 <h5 id="hudPowerupDisplay" class="fw-bold m-0 tracking-wide" style="color: var(--snake-color); min-height: 24px;">&nbsp;</h5>
                             </div>
-                        </div>
-
-                        <div class="d-grid gap-2">
-                            <button id="startBtn" class="btn btn-lg fw-bold border-0" style="background-color: var(--snake-color); color: var(--button-text-color, var(--canvas-bg));">
-                                ▶ START GAME
-                            </button>
-                            <button id="restartBtn" class="btn btn-lg fw-bold btn-outline-secondary d-none">
-                                ↺ NEW GAME
-                            </button>
                         </div>
 
                         <hr class="border-secondary opacity-25">
