@@ -18,7 +18,7 @@
     <header class="py-3 border-bottom mb-4">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
             <h1 class="display-6 fw-bold site-title m-0">UNCAFFEINATED - SOLID SNAKE</h1>
-            <a href="pages/how-play.html" class="btn btn-outline-secondary btn-sm">How to Play</a>
+            <a href="pages/how-play.html" class="btn btn-outline-secondary btn-sm" aria-label="View How to Play manual">How to Play</a>
         </div>
     </header>
 
@@ -77,14 +77,14 @@
                     <div class="card-body p-0 d-flex justify-content-center align-items-center position-relative" style="min-height: 65vh;">
                         
                         <div id="startScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2" style="background-color: rgba(0,0,0,0.85); backdrop-filter: blur(4px);">
-                            <h2 class="fw-bold mb-3 text-white">Snakes Loaded</h2>
+                            <div class="h2 fw-bold mb-3 text-white">Snakes Loaded</div>
                             <p class="text-white-50 mb-4 d-lg-none">Click on the board to turn the snake</p>
                             <p class="text-white-50 mb-4 d-none d-lg-block">Use arrow keys to move snake</p>
                             <p class="text-info small border border-info rounded px-3 py-1">Click START GAME</p>
                         </div>
 
                         <div id="gameOverScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-2 d-none" style="background-color: rgba(255, 0, 0, 0.2); backdrop-filter: blur(6px);">
-                            <h2 class="fw-bold display-3 text-white text-shadow-sm mb-0">Snake? SNAKEEEEEEE!!</h2>
+                            <div class="fw-bold display-3 text-white text-shadow-sm mb-0">Snake? SNAKEEEEEEE!!</div>
                             <p class="fs-4 text-white mt-3">Final Score: <span id="finalScore" class="fw-bold" style="color: var(--snake-color);">0</span></p>
                         </div>
 
