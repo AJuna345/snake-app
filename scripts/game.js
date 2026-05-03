@@ -332,17 +332,17 @@ function update() {
             if (targetVal === SCORE2X) {
                 activePowerup = SCORE2X;
                 powerupTimer = 600; 
-                updatePowerupText("Double Score!");
+                updatePowerupText("Super Snake 2X Score!");
             } else if (targetVal === NEWWALLS) {
                 generateRandomWalls(2); 
                 activePowerup = NEWWALLS;
                 powerupTimer = 600; 
-                updatePowerupText("New Walls!?!");
+                updatePowerupText("Danger! New Walls!");
             } else if (targetVal === SLOWMO) {
                 activePowerup = SLOWMO;
                 powerupTimer = 600; 
                 speed = baseSpeed + 4; 
-                updatePowerupText("Slow Mo");
+                updatePowerupText("Sneaky Snake!");
             }
             
             var tail = snake.remove();
