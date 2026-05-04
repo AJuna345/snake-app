@@ -106,14 +106,9 @@ I used Google Gemini AI to give me ideas and help with these problems:
 
 ## Future Improvements
 I’m using GitHub to track the Issues and Milestones for the Solid Snake game.
-- **[Issues](https://github.com/AJuna345/snake-app/milestones)**
+- **[Issues](https://github.com/AJuna345/snake-app/issues)**
 - **[Milestones](https://github.com/AJuna345/snake-app/milestones)**
 
-### At a Glance:
-- **Feature Ideas:** Adding a "Ghost Snake" mode and more complex power-ups.
-- **Known Issues:** Fixing a small glitch where the snake can sometimes overlap a wall on high-speed settings.
-- **Improvements:** Tweaking the mobile touch controls to be even more responsive.
-- 
 ## Validation
    <a href="https://validator.w3.org/nu/?doc=https://ajuna345.github.io/snake-app/" target="_blank" class="btn btn-outline-secondary btn-sm">
      Nu Validator
@@ -138,7 +133,7 @@ I’m using GitHub to track the Issues and Milestones for the Solid Snake game.
 
 3 directories, 6 files
 ```
-  
+
 ## Code block + explanation (“game.js”)
 - What is does
   - The generateRandomWalls() function builds random walls on the playfield instead of the empty box in my first game.
