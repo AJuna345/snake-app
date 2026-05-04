@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* --- Root Variables & Default Theme (Classic) --- */
+/* Default colors */
 :root {
     --bg-color: #ecf0f1;
     --text-color: #333333;
@@ -61,7 +61,7 @@ body.theme-una {
     --button-text-color: #592B8A;  
 }
 
-/* --- Global Styles --- */
+/* Default styles and font */
 body {
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -76,7 +76,7 @@ body {
     text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
 
-/* --- Utility Classes for No-Inline Requirement --- */
+/*  Classes to fix inlining problems */
 .bg-canvas { background-color: var(--canvas-bg) !important; }
 .bg-theme { background-color: var(--bg-color) !important; }
 .text-theme { color: var(--text-color) !important; }
@@ -93,9 +93,8 @@ body {
 .text-shadow-heavy { text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
 .text-shadow-medium { text-shadow: 1px 1px 2px rgba(0,0,0,0.5); }
 
-/* --- Layout Controls --- */
 .game-container-viewport {
-    min-height: 560px; /* Aligns with the 520px canvas + padding */
+    min-height: 560px; /* Fix playfield size issues */
 }
 
 .hud-panel {
@@ -104,6 +103,7 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Fix color contrast issues with some themes */
 body.theme-neon .hud-panel,
 body.theme-dark .hud-panel {
     border: 1px solid rgba(255,255,255,0.1);
@@ -117,7 +117,7 @@ body.theme-garfield .hud-panel {
     letter-spacing: 0.05em;
 }
 
-/* --- Game Canvas & Containers --- */
+/* Game board/playfield */
 #game-board canvas {
     border: 4px solid var(--border-color);
     border-radius: 8px;
@@ -138,7 +138,6 @@ body.theme-neon #game-board canvas {
     transition: opacity 0.3s ease;
 }
 
-/* --- Modal & Input Styling --- */
 .btn-close-white {
     filter: invert(1);
     opacity: 0.5;
@@ -148,7 +147,7 @@ body.theme-neon #game-board canvas {
     color: #212529 !important;
 }
 
-/* --- Mobile Controls Styling --- */
+/* Mobile devices */
 @media (min-width: 992px) {
     #mobileControls {
         display: none !important;
