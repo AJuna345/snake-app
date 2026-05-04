@@ -95,11 +95,11 @@ body.theme-uncaffeinated {
 /* UNA Pride Theme (Official Purple & Gold) */
 body.theme-una {
     --bg-color: #f0f0f5;           
-    --text-color: #592B8A;         /* UNA Purple */
-    --snake-color: #FFB92A;        /* UNA Gold */
+    --text-color: #592B8A;         
+    --snake-color: #FFB92A;        
     --canvas-bg: #ffffff;          
-    --border-color: #592B8A;       /* UNA Purple */
-    --button-text-color: #592B8A;  /* Purple text on Gold buttons */
+    --border-color: #592B8A;       
+    --button-text-color: #592B8A;  
 }
 
 .tracking-wide {
