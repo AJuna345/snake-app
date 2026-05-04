@@ -22,15 +22,15 @@ var speed = 7;
 var foodScore = 1; 
 var changingDirection = false; 
 
-// Active Powerup tracking (Effect duration)
+// Keep track of how long the power-up effect lasts after it's been picked up
 var activePowerup = null;
 var powerupTimer = 0;
 
-// Board Powerup tracking (Item expiration)
+// Keep track of the active power-up and how long until it disappears from the game board/playfield
 var boardPowerupPos = null;
 var boardPowerupTimer = 0;
 
-// Theme Colors
+// Game Colors (changes with selected theme)
 var snakeColor = "#28a745";
 var canvasBg = "#ffffff";
 var textColor = "#333333";
@@ -44,7 +44,7 @@ function updateThemeColors() {
     borderColor = computedStyle.getPropertyValue('--border-color').trim() || "#333333";
 }
 
-// Initialize theme colors immediately based on applied class
+// Initialize theme colors when the game loads
 updateThemeColors();
 
 var grid = {
@@ -86,6 +86,7 @@ function setFood() {
     }
 }
 
+// Randomly places a new power-up on an EMPTY grid square and starts the timer for it to disappear
 function spawnPowerup() {
     if (boardPowerupPos !== null) return;
 
@@ -105,6 +106,7 @@ function spawnPowerup() {
     }
 }
 
+// Update the Dashboard to show the player the active power-up
 function updatePowerupText(text) {
     const container = document.getElementById('powerupContainer');
     const display = document.getElementById('hudPowerupDisplay');
@@ -143,6 +145,7 @@ function main() {
     gameLoop();
 }
 
+// Handle keyboard and touch input to change the snake's direction
 function handlePlayerInput(e) {
     if (gameOver || snake.last === null) return;
     if (changingDirection) return;
@@ -187,6 +190,7 @@ function handlePlayerInput(e) {
     }
 }
 
+// Saves the current score to localStorage if it is a new high score
 function updateHighScore() {
     const highScores = getLeaderboard();
     const topScore = highScores.length > 0 ? highScores[0].score : 0;
@@ -194,6 +198,7 @@ function updateHighScore() {
     if (hudHighScore) hudHighScore.innerText = topScore;
 }
 
+// Adds randomized walls and keeps a 4x4 area clear for the snake at the game start
 function generateRandomWalls(numWalls) {
     var spawnX = Math.floor(WIDTH / 2);
     var spawnY = HEIGHT - 1;
@@ -256,6 +261,7 @@ function gameLoop() {
     draw();
     if (!gameOver) { window.requestAnimationFrame(gameLoop, canvas); }
 }
+
 
 function update() {
     frames++;
@@ -343,6 +349,7 @@ function update() {
     }
 }
 
+// Draws the snake, food, and walls on the playfield
 function draw() {
     var tw = canvas.width/grid.width;
     var th = canvas.height/grid.height;
