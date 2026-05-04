@@ -99,6 +99,7 @@ I used Google Gemini AI to give me ideas and help with these problems:
   - Used class concepts about semantic HTML, validation, accessibility, and responsive web design
 - [Solid Snake from Metal Gear Solid](https://en.wikipedia.org/wiki/Solid_Snake)
   - This was my best name idea for a polished snake game with power-ups
+  - The Game Over text "Snake? SNAKEEEEEEE!!" is a quote from the original game when Solid Snake dies
 - Color Themes
     - I used the official UNA purple and gold hex colors for the new UNA Pride theme
     - I used my coffee-themed brand colors from another class project to create the UNcaffeinated theme
