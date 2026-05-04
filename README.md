@@ -18,9 +18,17 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
 ## User Story
 **User Story**
 
-I want to create a classic Snake game with a retro style that will run in a browser.
-I want to save player names and settings.
-I want to track player high scores on a leaderboard and remember them between games.
+- **I want** to improve and enhance my original classic Snake game
+- **I want** a clean, modern-looking user interface with a player dashboard
+- **I want** to add randomized walls **so that** each game is different and challenging
+- **I want** to add power-ups that appear randomly after eating food and disappear after 10 seconds
+    - **So that** these power-ups add risk to the game when eating them because they may help or hurt players
+      - *Sneaky Snake* slows down the snake to help players survive longer and move through tight walls
+      - *ScoreX2* doubles the score each time a player eats food
+      - *More Walls* makes the playfield more dangerous by adding new walls
+  - **I want** to save player names and settings
+  - **I want** to track player high scores on a leaderboard and remember them between games.
+  - **I want** to be able to play the game on mobile devices without a keyboard
 
 ## Narrative
 
