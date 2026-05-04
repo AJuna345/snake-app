@@ -131,10 +131,19 @@ I used Google Gemini AI to give me ideas and help with these problems:
 3 directories, 6 files
 ```
   
-## Code block + explanation (“game.js” Garfield Easter Egg)
+## Code block + explanation (“game.js”)
+- What is does
+  - The generateRandomWalls() function builds random walls on the playfield instead of the empty box in my first game.
+- Why it matters
+  - The game is too easy and repetitive with an empty playfield
+- How it works
+  - I try to avoid building walls the player spawn position in the bottom-center of the playfield they don't immediately crash into a wall
+  - It create random horizontal and vertical walls inside the playfield with different lengths
+  - It changes the playfield grid from EMPTY to WALL when building walls
+
 ```javascript
 function generateRandomWalls(numWalls) {
-    var spawnX = Math.floor(WIDTH / 2);
+    var spawnX = Math.floor(WIDTH / 2); // Players spawn in the bottom-center of the playfield
     var spawnY = HEIGHT - 1;
 
     for (var i = 0; i < numWalls; i++) {
