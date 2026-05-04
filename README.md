@@ -2,11 +2,12 @@
 
 ## App Title
 **UNCAFFEINATED - Solid Snake**
-<br>
+<br><br>
 My update to the classic Snake game has a clean new user interface, themes, power-ups, and randomized playfields with walls. I also upgraded it to be unable on mobile devices.
 
 ## Authorship & Attribution
 Game and user interface development by **Aiden (A.J.) Ramsden**
+<br>
 [GitHub Profile](https://github.com/AJuna345)
 
 ## Resources
