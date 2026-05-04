@@ -26,15 +26,19 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
       - *Sneaky Snake* slows down the snake to help players survive longer and move through tight walls
       - *ScoreX2* doubles the score each time a player eats food
       - *More Walls* makes the playfield more dangerous by adding new walls
-  - **I want** to save player names and settings
-  - **I want** to track player high scores on a leaderboard and remember them between games.
-  - **I want** to be able to play the game on mobile devices without a keyboard
+- **I want** to save player names and settings
+- **I want** to track player high scores on a leaderboard and remember them between games.
+- **I want** to be able to play the game on mobile devices without a keyboard
 
 ## Narrative
+What the app does
+Why you chose it
+What you improved or built
+Brief development story
 
 ## Attribution
 
-## Resources
+### Resources
 - [W3Schools](https://www.w3schools.com/)
   - [HTML](https://www.w3schools.com/html/default.asp)
   - [CSS](https://www.w3schools.com/css/default.asp)
@@ -43,16 +47,24 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
   - [JavaScript Local Storage](https://www.w3schools.com/jsref/prop_win_localstorage.asp)
 - [MDN Web Docs](https://developer.mozilla.org/)
   - [Constraint Validation API](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation)
+  - [JavaScript Modules](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules)
+  - [Web Storage API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API)
+  - [Touch Events](https://developer.mozilla.org/en-US/docs/Web/API/Touch_events)
+  - [overscroll-behavior](https://developer.mozilla.org/en-US/docs/Web/CSS/overscroll-behavior)
   - [aria-live](https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/ARIA_Live_Regions)
-- [Advanced CSS Selectors](https://www.w3.org/TR/selectors-4/)
+- [Advanced CSS & Libraries](https://www.w3.org/TR/selectors-4/)
   - [:nth-child(odd)](https://www.w3.org/TR/selectors-4/#the-nth-child-pseudo) selects odd-numbered list items.
-  - [[target="_blank"]](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors) selects links that open in a new tab.
+  - [[target="_blank"]](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors)
+  - [Normalize.css](https://necolas.github.io/normalize.css/)
+  - [@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)
 - [Bootstrap 5.3](https://getbootstrap.com/)
-  - [Bootstrap Navbar](https://getbootstrap.com/docs/5.3/components/navbar/) is used for the top navigation bar in my Snake Game project.
+  - [Bootstrap Navbar](https://getbootstrap.com/docs/5.3/components/navbar/)
+  - [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [WebAIM](https://webaim.org/)
 - [WAVE Web Accessibility Evaluation Tool](https://wave.webaim.org/)
 - [Nu HTML Checker](https://validator.w3.org/nu/)
 - [Google Fonts](https://fonts.google.com/)
+  - [Inter](https://fonts.google.com/specimen/Inter) is the font that I use for my new user interface.
 
 ## Inspirations
 - Classic Snake arcade games
@@ -81,15 +93,6 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
 - **Classic Snake arcade gameplay**
   - This project was inspired by simple retro browser and arcade Snake games
   - I used a clean one-page layout with a separate How to Play page, a settings form, and a modal leaderboard to make the game more polished and user-friendly
-
-## Wireframes
-Wireframe images for Snake Game
-
-![Home/Start](images/Wireframe-1.jpg)
-![Gameboard](images/Wireframe-2.jpg)
-![How to Play](images/Wireframe-3.jpg)
-![Leaderboard](images/Wireframe%20-4.jpg)
-![Game Over](images/Wireframe-5.jpg)
 
 ## Project Features
 - Playable Snake game with Bootstrap navbar
