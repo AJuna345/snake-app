@@ -107,7 +107,6 @@ I used Google Gemini AI to give me ideas and help with these problems:
 ## Future Improvements
 I’m using GitHub to track the Issues and Milestones for the Solid Snake game.
 - **[Issues](https://github.com/AJuna345/snake-app/issues)**
-  - 
 - **[Milestones](https://github.com/AJuna345/snake-app/milestones)**
   - Create new, modern-looking Dashboard and User Interface
       - Closed Issues
