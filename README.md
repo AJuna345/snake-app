@@ -58,6 +58,7 @@ Brief development story
   - [Normalize.css](https://necolas.github.io/normalize.css/)
   - [@import](https://developer.mozilla.org/en-US/docs/Web/CSS/@import)
 - [Bootstrap 5.3](https://getbootstrap.com/)
+  - Used Bootstrap for the responsive navbar, cards, modal leaderboard, buttons, table, and layout grid
   - [Bootstrap Navbar](https://getbootstrap.com/docs/5.3/components/navbar/)
   - [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [WebAIM](https://webaim.org/)
@@ -73,26 +74,10 @@ Brief development story
   - Used class concepts about semantic HTML, validation, accessibility, and responsive web design
 - [Solid Snake from Metal Gear Solid](https://en.wikipedia.org/wiki/Solid_Snake)
   - This was my best name idea for a polished snake game with power-ups
-
-## Libraries & Frameworks
-- [Bootstrap 5.3.0](https://getbootstrap.com/)
-  - Used Bootstrap for the responsive navbar, cards, modal leaderboard, buttons, table, and layout grid
-
-## Assets
-- Google Fonts
-  - [DotGothic16](https://fonts.google.com/specimen/DotGothic16)
-  - [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
-- LocalStorage data for:
-  - Game Difficulty
-  - Themes (Classic White, Dark Mode, Neon, and Garfield theme)
-  - Leaderboard Scores
-- SessionStorage for:
-  - Player Name
-
-## Model / Inspiration
-- **Classic Snake arcade gameplay**
-  - This project was inspired by simple retro browser and arcade Snake games
-  - I used a clean one-page layout with a separate How to Play page, a settings form, and a modal leaderboard to make the game more polished and user-friendly
+- Color Themes
+    - I used the official UNA purple and gold hex colors for the new UNA Pride theme
+    - I used my coffee-themed brand colors from another class project to create the UNcaffeinated theme
+    - The Garfield easter egg theme is now a standard theme that is hard to look at for very long 
 
 ## Future Improvements
 
