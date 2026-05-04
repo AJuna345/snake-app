@@ -1,140 +1,84 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
 
-/* --- Root Variables & Default Theme (Classic) --- */
-:root {
-    --bg-color: #ecf0f1;
-    --text-color: #333333;
-    --snake-color: #28a745;
-    --canvas-bg: #ffffff;
-    --border-color: #00b8d4; 
+body {
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    /* Prevents pull-to-refresh on mobile devices during touch controls */
+    overscroll-behavior-y: contain; 
 }
 
-/* Theme Colors */
+/* Classic Theme with contrast fixed */
 .theme-classic {
     --bg-color: #f8f9fa;
     --text-color: #212529;
     --snake-color: #1e7e34;
     --canvas-bg: #ffffff;
     --border-color: #343a40;
+    --food-color: #dc3545;
 }
 
-body.theme-dark {
-    --bg-color: #1a1a1a;
-    --text-color: #f8f9fa;
-    --snake-color: #51cf66;
-    --canvas-bg: #2d2d2d;
-    --border-color: #339af0;
+/* Dark Mode */
+.theme-dark {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --snake-color: #4caf50;
+    --canvas-bg: #1e1e1e;
+    --border-color: #424242;
+    --food-color: #ff5252;
 }
 
-body.theme-neon {
-    --bg-color: #000000;
-    --text-color: #39ff14; 
-    --snake-color: #39ff14;
-    --canvas-bg: #0a0a0a;
-    --border-color: #ff00ff; 
+/* Cyber Neon */
+.theme-neon {
+    --bg-color: #050505;
+    --text-color: #00ffff;
+    --snake-color: #ff00ff;
+    --canvas-bg: #111111;
+    --border-color: #00ffff;
+    --food-color: #ffff00;
 }
 
-/* Garfield Theme - High Contrast & Visibility Update */
-body.theme-garfield {
-    --bg-color: #fca311;           
-    --text-color: #000000;         
-    --snake-color: #6d2301;        
-    --canvas-bg: #ffeaa7;          
-    --border-color: #9d3a05;       
-    --button-text-color: #000000;  
-}
-
-/* --- Global Styles --- */
-body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    transition: background-color 0.4s ease, color 0.4s ease;
-    min-height: 100vh;
-}
-
-.site-title {
-    letter-spacing: 2px;
-    color: var(--text-color);
-    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
-}
-
-/* --- Command Center / HUD Styles --- */
-.hud-panel {
-    background-color: var(--bg-color);
-    border: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-}
-
-/* Specific fix for HUD score & powerup visibility in Garfield mode */
-body.theme-garfield #hudScoreDisplay,
-body.theme-garfield #hudPowerupDisplay {
-    color: var(--snake-color) !important;
-    text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
-}
-
-body.theme-neon .hud-panel,
-body.theme-dark .hud-panel {
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-body.theme-garfield .hud-panel {
-    border: 2px solid var(--border-color);
+/* Garfield Theme */
+.theme-garfield {
+    --bg-color: #ffb74d;
+    --text-color: #3e2723;
+    --snake-color: #e65100;
+    --canvas-bg: #ffe0b2;
+    --border-color: #5d4037;
+    --food-color: #d84315;
 }
 
 /* UNcaffeinated Coffee Theme */
-body.theme-uncaffeinated {
-    --bg-color: #2c1e16;           
-    --text-color: #f3e5ab;         
-    --snake-color: #d35400;        
-    --canvas-bg: #3e2723;          
-    --border-color: #f39c12;       
-    --button-text-color: #ffffff;
+.theme-uncaffeinated {
+    --bg-color: #efebe9;
+    --text-color: #4e342e;
+    --snake-color: #5d4037;
+    --canvas-bg: #d7ccc8;
+    --border-color: #3e2723;
+    --food-color: #8d6e63;
 }
 
-/* UNA Pride Theme (Official Purple & Gold) */
-body.theme-una {
-    --bg-color: #f0f0f5;           
-    --text-color: #592B8A;         
-    --snake-color: #FFB92A;        
-    --canvas-bg: #ffffff;          
-    --border-color: #592B8A;       
-    --button-text-color: #592B8A;  
+/* UNA Pride Theme */
+.theme-una {
+    --bg-color: #46166b; 
+    --text-color: #ffffff;
+    --snake-color: #db9f11; 
+    --canvas-bg: #310c4f;
+    --border-color: #db9f11;
+    --food-color: #ffffff;
 }
 
+/* --- HUD and Overlay Utilities --- */
 .tracking-wide {
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
 }
 
-/* --- Game Canvas & Containers --- */
-#game-board {
-    background-color: transparent;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.bg-theme-faded {
+    background-color: rgba(0,0,0,0.03);
 }
 
-#game-board canvas {
-    border: 4px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    background-color: var(--canvas-bg);
-    max-width: 100%;
-    
-    /* Bulletproof Touch Locks - Prevents mobile browsers from zooming/scrolling on tap */
-    touch-action: none;
-    -webkit-touch-callout: none;
-    user-select: none;
-}
-
-body.theme-neon #game-board canvas {
-    box-shadow: 0 0 20px var(--snake-color);
-}
-
-/* --- Overlays (Start & Game Over) --- */
-#startScreen, #gameOverScreen {
-    border-radius: 8px;
-    transition: opacity 0.3s ease;
+.snake-score-text {
+    color: var(--snake-score-color, var(--snake-color));
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.1);
 }
 
 .overlay-start {
@@ -147,34 +91,19 @@ body.theme-neon #game-board canvas {
     backdrop-filter: blur(6px);
 }
 
-/* --- Modal & Input Styling --- */
-.modal-content {
-    border: 1px solid rgba(255,255,255,0.1);
+.text-shadow-heavy {
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
-.form-select, .form-control {
-    background-color: rgba(255,255,255,0.05) !important;
-    border-color: var(--border-color) !important;
-    color: var(--text-color) !important;
+.text-shadow-medium {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
 }
 
-.text-dark {
-    color: #212529 !important;
+.game-viewport-height {
+    min-height: 65vh;
 }
 
-/* --- Button Enhancements --- */
-.btn-outline-secondary {
-    border-color: var(--border-color);
-    color: var(--text-color);
-}
-
-.btn-outline-secondary:hover {
-    background-color: var(--border-color);
-    border-color: var(--border-color);
-    color: var(--bg-color);
-}
-
-/* --- NO INLINE STYLE FIXES --- */
+/* --- Rubric: No Inline Styles Cleanup --- */
 .bg-canvas {
     background-color: var(--canvas-bg) !important;
 }
@@ -206,51 +135,80 @@ body.theme-neon #game-board canvas {
     background-color: var(--bg-color) !important;
 }
 
-/* --- Mobile Controls Styling --- */
-/* Hide on Desktop */
-@media (min-width: 992px) {
-    #mobileControls {
-        display: none !important;
-    }
+.form-control-custom, .form-select-custom {
+    background-color: transparent !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-color) !important;
 }
 
-#mobileControls .btn {
-    width: 60px;
-    height: 60px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.5rem;
+.table-theme {
+    --bs-table-bg: transparent;
+    --bs-table-color: var(--text-color);
+}
+
+/* --- Game Board Logic --- */
+#game-board {
+    display: grid;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-height: 100%;
+    max-width: 100%;
+    background-color: var(--canvas-bg);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.snake-head {
+    background-color: var(--snake-color);
+    border-radius: 4px;
+    z-index: 2;
+}
+
+.snake-body {
+    background-color: var(--snake-color);
+    opacity: 0.85;
+    border-radius: 2px;
+}
+
+.food {
+    background-color: var(--food-color);
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--food-color);
+}
+
+/* Power-Ups */
+.powerup-super {
+    background-color: #ffd700;
+    border-radius: 3px;
+    animation: pulse 1s infinite alternate;
+}
+
+.powerup-sneaky {
+    background-color: #00bcd4;
+    border-radius: 50%;
+    animation: pulse 1s infinite alternate;
+}
+
+.danger-wall {
     background-color: var(--border-color);
-    border: none;
-    color: var(--bg-color);
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 5px,
+        rgba(255,0,0,0.2) 5px,
+        rgba(255,0,0,0.2) 10px
+    );
 }
 
-#mobileControls .btn:active {
-    filter: brightness(1.2);
+@keyframes pulse {
+    from { transform: scale(0.9); }
+    to { transform: scale(1.1); }
 }
 
-/* --- Landscape Mobile Fix --- */
-@media (max-width: 991px) and (orientation: landscape) {
-    .col-lg-9 {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        gap: 15px;
-    }
-    
-    .col-lg-9 > .card {
-        flex: 1;
-        margin-bottom: 0 !important;
-    }
-
-    #mobileControls {
-        margin-top: 0 !important;
-        flex-shrink: 0;
-    }
-
-    #game-board canvas {
-        max-height: 80vh;
-        width: auto;
+@media (max-width: 992px) {
+    #game-board {
+        aspect-ratio: auto;
+        height: 60vh;
     }
 }
