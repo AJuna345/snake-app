@@ -31,7 +31,7 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
 - **I want** to be able to play the game on mobile devices without a keyboard
 
 ## Narrative
-*What the app does*
+- *What the app does*
 UNcaffeinated - Solid Snake is an enhanced version of the classic Snake game. I tried to update it with a clean, modern look and a dashboard that tracks player stats in real-time. It supports different color themes and a leaderboard that ranks the game's best Snake Wranglers.
 
 *Why I chose it*
