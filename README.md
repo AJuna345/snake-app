@@ -132,7 +132,7 @@ I used Google Gemini AI to give me ideas and help with these problems:
 ```
   
 ## Code block + explanation (“game.js” Garfield Easter Egg)
-'''javascript
+```javascript
 function generateRandomWalls(numWalls) {
     var spawnX = Math.floor(WIDTH / 2);
     var spawnY = HEIGHT - 1;
@@ -156,4 +156,4 @@ function generateRandomWalls(numWalls) {
         }
     }
 }
-'''
+```
