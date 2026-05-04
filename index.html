@@ -10,7 +10,7 @@
     <link href="styles/game.css" rel="stylesheet">
 </head>
     
-<body class="theme-classic text-theme bg-canvas">
+<body class="theme-classic">
     
     <header class="py-3 border-bottom mb-4">
         <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
@@ -23,44 +23,44 @@
         <div class="row flex-column-reverse flex-lg-row">
             
             <div class="col-lg-2 col-xl-2 mb-4">
-                <div class="card shadow-lg border-secondary rounded-4 overflow-hidden h-100 bg-canvas">
-                    <div class="card-header text-center py-3 border-theme bg-theme text-theme">
-                        <h2 class="h5 m-0 fw-bold text-uppercase tracking-wide">DASHBOARD</h2>
+                <div class="card shadow-lg border-secondary rounded-4 overflow-hidden bg-canvas">
+                    <div class="card-header text-center py-3 bg-theme-header">
+                        <h2 class="h5 m-0 fw-bold text-uppercase tracking-wide text-theme-header">DASHBOARD</h2>
                     </div>
                     
                     <div class="card-body d-flex flex-column gap-4 p-4 hud-panel">
                         <div class="d-grid gap-2">
-                            <button id="startBtn" class="btn btn-lg fw-bold btn-primary-custom">
+                            <button id="startBtn" class="btn btn-lg fw-bold btn-start-custom">
                                 <i class="bi bi-play-fill"></i> START GAME
                             </button>
-                            <button id="restartBtn" class="btn btn-lg fw-bold d-none border-theme text-theme">
+                            <button id="restartBtn" class="btn btn-lg fw-bold d-none btn-outline-custom">
                                 <i class="bi bi-arrow-clockwise"></i> NEW GAME
                             </button>
                         </div>
 
-                        <div class="p-3 rounded-3 bg-theme-faded">
+                        <div class="p-3 rounded-3 bg-hud-stats">
                             <h3 class="h6 text-uppercase fw-normal mb-1 text-theme">Snake Wrangler</h3>
                             <div id="hudPlayerName" class="h4 fw-bold mb-4 text-truncate text-theme">Guest</div>
 
                             <h3 class="h6 text-uppercase fw-normal mb-2 text-theme">Current Score</h3>
-                            <div id="hudScoreDisplay" class="h2 fw-bold mb-3 snake-score-text">0</div>
+                            <div id="hudScoreDisplay" class="h2 fw-bold mb-3 snake-score-color">0</div>
                             
                             <h3 class="h6 text-uppercase fw-normal mb-2 text-theme">High Score</h3>
                             <div id="hudHighScoreDisplay" class="h3 fw-bold m-0 text-theme">0</div>
 
                             <div id="powerupContainer" class="mt-4 invisible">
                                 <h3 class="h6 text-uppercase fw-normal mb-1 text-theme">Active Power-Up</h3>
-                                <div id="hudPowerupDisplay" class="h5 fw-bold m-0 tracking-wide snake-score-text">&nbsp;</div>
+                                <div id="hudPowerupDisplay" class="h5 fw-bold m-0 tracking-wide snake-score-color">&nbsp;</div>
                             </div>
                         </div>
 
                         <hr class="border-secondary opacity-25">
 
                         <div class="d-grid gap-2">
-                            <button type="button" class="btn fw-bold btn-outline-thin" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
+                            <button type="button" class="btn fw-bold btn-outline-custom" data-bs-toggle="modal" data-bs-target="#leaderboardModal">
                                 <i class="bi bi-trophy-fill text-warning me-1"></i> LEADERBOARD
                             </button>
-                            <button type="button" class="btn fw-bold btn-outline-thin" data-bs-target="#settingsModal" data-bs-toggle="modal">
+                            <button type="button" class="btn fw-bold btn-outline-custom" data-bs-toggle="modal" data-bs-target="#settingsModal">
                                 <i class="bi bi-gear-fill text-secondary me-1"></i> SETTINGS
                             </button>
                         </div>
@@ -70,7 +70,7 @@
 
             <div class="col-lg-10 col-xl-10 mb-4 d-flex flex-column">
                 <div class="card shadow-lg border-secondary rounded-4 overflow-hidden flex-grow-1 bg-theme">
-                    <div class="card-body p-0 d-flex justify-content-center align-items-center position-relative game-viewport-height">
+                    <div class="card-body p-0 d-flex justify-content-center align-items-center position-relative game-container-viewport">
                         
                         <div id="startScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-3 overlay-start">
                             <div class="h2 fw-bold mb-3 text-white">Snakes Loaded</div>
@@ -80,10 +80,12 @@
 
                         <div id="gameOverScreen" class="position-absolute w-100 h-100 d-flex flex-column justify-content-center align-items-center z-3 d-none overlay-gameover">
                             <div class="fw-bold display-3 text-white mb-0 text-shadow-heavy">Snake? SNAKEEEEEEE!!</div>
-                            <p class="fs-4 text-white mt-3 text-shadow-medium">Final Score: <span id="finalScore" class="fw-bold snake-score-text">0</span></p>
+                            <p class="fs-4 text-white mt-3 text-shadow-medium">Final Score: <span id="finalScore" class="fw-bold snake-score-color">0</span></p>
                         </div>
 
-                        <div id="game-board" class="w-100 h-100 p-3"></div>
+                        <div id="game-board" class="w-100 h-100 p-3 d-flex justify-content-center align-items-center">
+                            <canvas id="gameCanvas" width="520" height="520"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -95,10 +97,10 @@
             <div class="modal-content border-0 shadow-lg bg-canvas text-theme">
                 <div class="modal-header border-secondary bg-theme">
                     <h2 class="modal-title h5 fw-bold"><i class="bi bi-trophy-fill text-warning me-2"></i>Top Wranglers</h2>
-                    <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body p-0">
-                    <table class="table table-borderless mb-0 text-center table-theme">
+                    <table class="table table-borderless mb-0 text-center table-theme-custom">
                         <thead class="border-bottom border-secondary opacity-75">
                             <tr>
                                 <th class="py-3">Rank</th>
@@ -122,16 +124,16 @@
             <div class="modal-content border-0 shadow-lg bg-canvas text-theme">
                 <div class="modal-header border-secondary bg-theme">
                     <h2 class="modal-title h5 fw-bold"><i class="bi bi-gear-fill text-secondary me-2"></i>Game Settings</h2>
-                    <button type="button" class="btn-close btn-close-white opacity-50" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="playerNameInput" class="form-label fw-bold">Snake Wrangler</label>
-                        <input type="text" id="playerNameInput" class="form-control form-control-custom" placeholder="Enter your initials">
+                        <input type="text" id="playerNameInput" class="form-control input-custom" placeholder="Enter your initials">
                     </div>
                     <div class="mb-3">
                         <label for="themeSelect" class="form-label fw-bold">Theme</label>
-                        <select id="themeSelect" aria-label="Game Theme Select" class="form-select form-select-custom">
+                        <select id="themeSelect" aria-label="Game Theme Select" class="form-select input-custom">
                             <option value="classic" class="text-dark">Classic</option>
                             <option value="dark" class="text-dark">Dark Mode</option>
                             <option value="neon" class="text-dark">Cyber Neon</option>
@@ -142,7 +144,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="speedSelect" class="form-label fw-bold">Difficulty (Speed)</label>
-                        <select id="speedSelect" aria-label="Game Difficulty Speed Select" class="form-select form-select-custom">
+                        <select id="speedSelect" aria-label="Game Difficulty Speed Select" class="form-select input-custom">
                             <option value="10" class="text-dark">Slow (Training)</option>
                             <option value="7" class="text-dark">Normal</option>
                             <option value="5" class="text-dark">Fast</option>
@@ -150,9 +152,9 @@
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer border-secondary modal-footer-custom">
-                    <button type="button" class="btn btn-outline-thin" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" id="saveSettingsBtn" class="btn btn-primary-custom">Save</button>
+                <div class="modal-footer border-secondary bg-theme">
+                    <button type="button" class="btn btn-outline-custom" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="saveSettingsBtn" class="btn btn-start-custom">Save</button>
                 </div>
             </div>
         </div>
