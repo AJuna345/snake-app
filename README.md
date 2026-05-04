@@ -14,8 +14,8 @@ Game and user interface development by **Aiden (A.J.) Ramsden**
 [GitHub Profile](https://github.com/AJuna345)
 
 ## GitHub Links
-- **[Repo](https://github.com/AJuna345/snake-game)**
-- **[Deployed App](https://ajuna345.github.io/snake-game/)**
+- **[Repo](https://github.com/AJuna345/snake-app)**
+- **[Deployed App](https://ajuna345.github.io/snake-app/)**
 
 ## Resources
 - [W3Schools](https://www.w3schools.com/)
@@ -42,6 +42,8 @@ Game and user interface development by **Aiden (A.J.) Ramsden**
   - [Classic Retro Snake Game (HTML, CSS, JS)](https://codeshack.io/classic-retro-snake-game-html-css-js/)
 - Professor Barry Cumbie, Computer Information Systems, University of North Alabama
   - Used class concepts about semantic HTML, validation, accessibility, and responsive web design
+- [Solid Snake from Metal Gear Solid](https://en.wikipedia.org/wiki/Solid_Snake)
+  - This was my best name idea for a polished snake game with power-ups
 
 ## Libraries & Frameworks
 - [Bootstrap 5.3.0](https://getbootstrap.com/)
@@ -68,8 +70,6 @@ I want to track player high scores on a leaderboard and remember them between ga
 - **Classic Snake arcade gameplay**
   - This project was inspired by simple retro browser and arcade Snake games
   - I used a clean one-page layout with a separate How to Play page, a settings form, and a modal leaderboard to make the game more polished and user-friendly
-  - [Solid Snake from Metal Gear Solid](https://en.wikipedia.org/wiki/Solid_Snake)
-    - This was my best idea for a polished snake game with power-ups
 
 ## Wireframes
 Wireframe images for Snake Game
@@ -102,7 +102,20 @@ Wireframe images for Snake Game
      WAVE Checker
    </a>
 
+## Project Structure
+  - .
+├── index.html
+├── pages
+│   └── how-play.html
+├── scripts
+│   ├── game.js
+│   ├── leaderboard.js
+│   └── storage.js
+└── styles
+    └── game.css
 
+3 directories, 6 files
+  
 ## Code block + explanation (“game.js” Garfield Easter Egg)
 This code adds the Garfield Easter Egg theme when the player enters the name Garfield. It works with the DOM by finding the theme dropdown menu in the page, checking whether a Garfield option is already inside that menu, and creating a new `<option>` element if it is missing. Then the JavaScript code adds that new option into the dropdown, changes the selected value, updates the `<body>` class so the page uses the Garfield theme colors, saves that choice in local storage, and redraws everything so the game theme updates immediately. This is a good example of JavaScript changing existing page elements, adding new DOM content, and saving a user setting.
 
