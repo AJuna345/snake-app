@@ -104,15 +104,15 @@ Wireframe images for Snake Game
 
 ## Project Structure
   - .
-├── index.html
-├── pages
-│   └── how-play.html
-├── scripts
-│   ├── game.js
-│   ├── leaderboard.js
-│   └── storage.js
-└── styles
-    └── game.css
+  - ├── index.html
+  - ├── pages
+  - │   └── how-play.html
+  - ├── scripts
+  - │   ├── game.js
+  - │   ├── leaderboard.js
+  - │   └── storage.js
+  - └── styles
+  -     └── game.css
 
 3 directories, 6 files
   
