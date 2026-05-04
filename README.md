@@ -6,16 +6,25 @@
 My update to the classic Snake game has a clean new user interface, themes, power-ups, and randomized playfields with walls. I also upgraded it to be usable on mobile devices.
 
 ## One-liner Quote/Tagline
-> “Solid Snake needs food.”
+> “Solid Snake must eat to survive!”
 
-## Authorship & Attribution
-Game and user interface development by **Aiden (A.J.) Ramsden**
+## Authorship
+Game and user interface enhancements by **Aiden (A.J.) Ramsden**
 <br>
 [GitHub Profile](https://github.com/AJuna345)
-
-## GitHub Links
 - **[Repo](https://github.com/AJuna345/snake-app)**
 - **[Deployed App](https://ajuna345.github.io/snake-app/)**
+
+## User Story
+**User Story**
+
+I want to create a classic Snake game with a retro style that will run in a browser.
+I want to save player names and settings.
+I want to track player high scores on a leaderboard and remember them between games.
+
+## Narrative
+
+## Attribution
 
 ## Resources
 - [W3Schools](https://www.w3schools.com/)
@@ -54,17 +63,11 @@ Game and user interface development by **Aiden (A.J.) Ramsden**
   - [DotGothic16](https://fonts.google.com/specimen/DotGothic16)
   - [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P)
 - LocalStorage data for:
-  - Player Name
   - Game Difficulty
   - Themes (Classic White, Dark Mode, Neon, and Garfield theme)
   - Leaderboard Scores
-
-## User Story
-**User Story**
-
-I want to create a classic Snake game with a retro style that will run in a browser.
-I want to save player names and settings.
-I want to track player high scores on a leaderboard and remember them between games.
+- SessionStorage for:
+  - Player Name
 
 ## Model / Inspiration
 - **Classic Snake arcade gameplay**
