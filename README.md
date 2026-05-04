@@ -26,15 +26,28 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
       - *Sneaky Snake* slows down the snake to help players survive longer and move through tight walls
       - *ScoreX2* doubles the score each time a player eats food
       - *More Walls* makes the playfield more dangerous by adding new walls
-- **I want** to save player names and settings
-- **I want** to track player high scores on a leaderboard and remember them between games.
+- **I want** to save player names, settings, and high scores
+  - **So that** the game tracks player high scores on a leaderboard and remembers them between games
 - **I want** to be able to play the game on mobile devices without a keyboard
 
 ## Narrative
-What the app does
-Why you chose it
-What you improved or built
+*What the app does*
+UNcaffeinated - Solid Snake is an enhanced version of the classic Snake game. I tried to update it with a clean, modern look and a dashboard that tracks player stats in real-time. It supports different color themes and a leaderboard that ranks the game's best Snake Wranglers.
+
+*Why I chose it*
+The classic snake game is very simple and gets boring quickly, so I wanted to make it more fun and challenging.
+
+*What I improved or built*
+Many classic arcade games allow players to memorize each level and power-up locations, so I wanted to make it harder by adding random walls and an element of danger. Players must quickly make a choice to eat power-ups since they disappear in 10 seconds. They might help them get a better score or make it through tight walls that would be impossible at normal speeds.
+
+I think that my new user interface is much better looking than the first project. I like the Google 16-bit font, but it was hard to read, so I also decided to use the Google Inter font this time.
+
 Brief development story
+I ran into several problems while working on this project. I wanted to add icons or images for the snake head, body, tail, food, and walls, but I could not get the PNG icons to draw correctly, even with help from Google. I had to look for ideas and found a way with Google AI help to draw everything with simple lines, rectangles, and circles. It's not what I wanted, but it looks much better than my original game.
+
+I had to research event timers to learn how to make the power-ups only last for 10 seconds. I was able to get the dashboard to show the current power-up, but it took me a while to figure out how to clear it after the power-up wore off.
+
+Making the game work on my cell phone and tablet was hard. I put arrow icons in the original game, but they didn't work well. I wanted to just touch the screen to change the snake's direction, but I couldn't get it to work the way I wanted. I had to look for more examples and ask Google AI for help to fix the problems. My dashboard is too large for mobile devices, and I had to press the Start Game button and scroll up quickly to play. I didn't have enough time to fix it before the assignment was due, so I moved the Start Game button up to the top to make it work.
 
 ## Attribution
 
