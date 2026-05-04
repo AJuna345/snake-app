@@ -6,15 +6,11 @@ import {
     saveTheme,
     getSpeed,
     saveSpeed,
-    saveHighScore
+    saveHighScore,
+    getLeaderboard
 } from './storage.js';
 
-/**
- * NO INLINE SCRIPT FIX: 
- * Apply the theme immediately upon script load to prevent 
- * background flashing, satisfying the rubric requirement.
- */
-document.body.className = `theme-${getTheme()}`;
+document.body.className = `theme-${getTheme()} text-theme bg-canvas`;
 
 var WIDTH = 26, HEIGHT = 26; 
 var EMPTY = 0, SNAKE = 1, FOOD = 2, WALL = 3, SCORE2X = 4, NEWWALLS = 5, SLOWMO = 6;
@@ -192,7 +188,7 @@ function handlePlayerInput(e) {
 }
 
 function updateHighScore() {
-    const highScores = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
+    const highScores = getLeaderboard();
     const topScore = highScores.length > 0 ? highScores[0].score : 0;
     const hudHighScore = document.getElementById("hudHighScoreDisplay");
     if (hudHighScore) hudHighScore.innerText = topScore;
