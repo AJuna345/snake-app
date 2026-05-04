@@ -86,7 +86,8 @@ Making the game work on my cell phone and tablet was hard. I added arrow icons t
   - [Inter](https://fonts.google.com/specimen/Inter) is the font that I use for my new user interface.
 
 ### AI Usage
-I used Google Gemini AI to help with these problems:
+I used Google Gemini AI to give me ideas and help with these problems:
+- Draw the snake, food, and walls with lines, rectangles, and circles when I couldn't get my icons to draw and turn the way I wanted
 - Find problems reported by Nu HTML and WAVE Web Accessibility and recommend fixes
 - Fix problems with mobile device touch events and give examples of how to make the snake turn when the screen is touched
 - Find and fix inline script problems
@@ -131,3 +132,28 @@ I used Google Gemini AI to help with these problems:
 ```
   
 ## Code block + explanation (“game.js” Garfield Easter Egg)
+'''javascript
+function generateRandomWalls(numWalls) {
+    var spawnX = Math.floor(WIDTH / 2);
+    var spawnY = HEIGHT - 1;
+
+    for (var i = 0; i < numWalls; i++) {
+        var length = Math.floor(Math.random() * 4) + 2; 
+        var isHorizontal = Math.random() < 0.5; 
+        var startX = Math.floor(Math.random() * WIDTH);
+        var startY = Math.floor(Math.random() * HEIGHT);
+
+        if (isHorizontal && startX + length > WIDTH) startX = WIDTH - length;
+        if (!isHorizontal && startY + length > HEIGHT) startY = HEIGHT - length;
+
+        for (var j = 0; j < length; j++) {
+            var wx = isHorizontal ? startX + j : startX;
+            var wy = isHorizontal ? startY : startY + j;
+            if (grid.get(wx, wy) === EMPTY) {
+                if (Math.abs(wx - spawnX) < 4 && Math.abs(wy - spawnY) < 4) continue; 
+                grid.set(WALL, wx, wy);
+            }
+        }
+    }
+}
+'''
