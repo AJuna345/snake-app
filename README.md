@@ -80,10 +80,16 @@ Making the game work on my cell phone and tablet was hard. I added arrow icons t
   - [Bootstrap Navbar](https://getbootstrap.com/docs/5.3/components/navbar/)
   - [Bootstrap Icons](https://icons.getbootstrap.com/)
 - [WebAIM](https://webaim.org/)
-- [WAVE Web Accessibility Evaluation Tool](https://wave.webaim.org/)
 - [Nu HTML Checker](https://validator.w3.org/nu/)
+- [WAVE Web Accessibility Evaluation Tool](https://wave.webaim.org/)
 - [Google Fonts](https://fonts.google.com/)
   - [Inter](https://fonts.google.com/specimen/Inter) is the font that I use for my new user interface.
+
+### AI Usage
+I used Google Gemini AI to help with these problems:
+- Find problems reported by Nu HTML and WAVE Web Accessibility and recommend fixes
+- Fix problems with mobile device touch events and give examples of how to make the snake turn when the screen is touched
+- Find and fix inline script problems
 
 ## Inspirations
 - Classic Snake arcade games
