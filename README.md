@@ -14,7 +14,7 @@ Game and user interface development by **Aiden (A.J.) Ramsden**
 [GitHub Profile](https://github.com/AJuna345)
 
 ## GitHub Links
-- [**Repo: **](https://github.com/AJuna345/snake-game)
+- **[Repo:](https://github.com/AJuna345/snake-game)**
 - **Deployed App:** [https://ajuna345.github.io/snake-game/](https://ajuna345.github.io/snake-game/)
 
 ## Resources
