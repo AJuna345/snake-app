@@ -3,7 +3,7 @@
 ## App Title
 **UNCAFFEINATED - Solid Snake**
 <br><br>
-My update to the classic Snake game has a clean new user interface, themes, power-ups, and randomized playfields with walls. I also upgraded it to be unable on mobile devices.
+My update to the classic Snake game has a clean new user interface, themes, power-ups, and randomized playfields with walls. I also upgraded it to be usable on mobile devices.
 
 ## One-liner Quote/Tagline
 > “Solid Snake needs food.”
