@@ -94,18 +94,7 @@ Brief development story
   - This project was inspired by simple retro browser and arcade Snake games
   - I used a clean one-page layout with a separate How to Play page, a settings form, and a modal leaderboard to make the game more polished and user-friendly
 
-## Project Features
-- Playable Snake game with Bootstrap navbar
-- Player Name and Settings
-  - Player name validation
-  - Theme selector
-  - Difficulty selector
-- How to Play page
-- Keyboard controls (up, down, left, right)
-- LocalStorage used to store player settings and leaderboard data
-- Modal leaderboard with a button to clear all scores
-- Accessible status announcements with `aria-live`
-- Garfield Easter egg theme
+## Future Improvements
 
 ## Validation
    <a href="https://validator.w3.org/nu/?doc=https://ajuna345.github.io/snake-app/" target="_blank" class="btn btn-outline-secondary btn-sm">
@@ -133,23 +122,3 @@ Brief development story
 ```
   
 ## Code block + explanation (“game.js” Garfield Easter Egg)
-This code adds the Garfield Easter Egg theme when the player enters the name Garfield. It works with the DOM by finding the theme dropdown menu in the page, checking whether a Garfield option is already inside that menu, and creating a new `<option>` element if it is missing. Then the JavaScript code adds that new option into the dropdown, changes the selected value, updates the `<body>` class so the page uses the Garfield theme colors, saves that choice in local storage, and redraws everything so the game theme updates immediately. This is a good example of JavaScript changing existing page elements, adding new DOM content, and saving a user setting.
-
-```javascript
-function unlockGarfieldTheme() {
-    const themeSelect = document.getElementById('themeSelect');
-    let garfieldOption = themeSelect.querySelector('option[value="garfield"]');
-    if (!garfieldOption) {
-        garfieldOption = document.createElement('option');
-        garfieldOption.value = 'garfield';
-        garfieldOption.textContent = 'Garfield (Monday Mode)';
-        themeSelect.appendChild(garfieldOption);
-    }
-    themeSelect.value = 'garfield';
-    document.body.className = 'theme-garfield';
-    saveTheme('garfield');
-    setTimeout(() => {
-        updateThemeColors();
-        if (canvas && ctx) draw();
-    }, 50);
-}
