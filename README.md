@@ -5,10 +5,17 @@
 <br><br>
 My update to the classic Snake game has a clean new user interface, themes, power-ups, and randomized playfields with walls. I also upgraded it to be unable on mobile devices.
 
+## One-liner Quote/Tagline
+> “Solid Snake needs food.”
+
 ## Authorship & Attribution
 Game and user interface development by **Aiden (A.J.) Ramsden**
 <br>
 [GitHub Profile](https://github.com/AJuna345)
+
+## GitHub Links
+- [**Repo: **](https://github.com/AJuna345/snake-game)
+- **Deployed App:** [https://ajuna345.github.io/snake-game/](https://ajuna345.github.io/snake-game/)
 
 ## Resources
 - [W3Schools](https://www.w3schools.com/)
@@ -50,9 +57,6 @@ Game and user interface development by **Aiden (A.J.) Ramsden**
   - Themes (Classic White, Dark Mode, Neon, and Garfield theme)
   - Leaderboard Scores
 
-## One-liner Quote/Tagline
-> “Now with more snake.”
-
 ## User Story
 **User Story**
 
@@ -60,14 +64,12 @@ I want to create a classic Snake game with a retro style that will run in a brow
 I want to save player names and settings.
 I want to track player high scores on a leaderboard and remember them between games.
 
-## GitHub Links
-- **Repo:** [https://github.com/AJuna345/snake-game](https://github.com/AJuna345/snake-game)
-- **Deployed App:** [https://ajuna345.github.io/snake-game/](https://ajuna345.github.io/snake-game/)
-
 ## Model / Inspiration
 - **Classic Snake arcade gameplay**
   - This project was inspired by simple retro browser and arcade Snake games
   - I used a clean one-page layout with a separate How to Play page, a settings form, and a modal leaderboard to make the game more polished and user-friendly
+  - [Solid Snake from Metal Gear Solid](https://en.wikipedia.org/wiki/Solid_Snake)
+    - This was my best idea for a polished snake game with power-ups
 
 ## Wireframes
 Wireframe images for Snake Game
