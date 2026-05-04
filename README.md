@@ -109,22 +109,22 @@ I used Google Gemini AI to give me ideas and help with these problems:
 I’m using GitHub to track the Issues and Milestones for the Solid Snake game.
 - **[Issues](https://github.com/AJuna345/snake-app/issues)**
 - **[Milestones](https://github.com/AJuna345/snake-app/milestones?state=closed)**
-  - Create new, modern-looking Dashboard and User Interface
+  - [Create new, modern-looking Dashboard and User Interface](https://github.com/AJuna345/snake-app/milestone/1)
       - Closed Issues
           - The Game Over screen is not displayed
       - Open Issues
           - Buttons and text are hard to see or read on some themes
           - The Dashboard is too large to see on some mobile devices
-  - Add randomized walls
+  - [Add randomized walls](https://github.com/AJuna345/snake-app/milestone/2)
       - Open Issues
           - Walls are too close to the player start position
           - Food is placed in locations that are impossible for the snake to reach
-  - Add power-ups to the game
+  - [Add power-ups to the game](https://github.com/AJuna345/snake-app/milestone/3)
       - Closed Issues
           - Remove power-ups after 10 seconds
       - Open Issues
           - Power-ups are placed in locations that are impossible for the snake to reach
-  - Improve gameplay on mobile devices
+  - [Improve gameplay on mobile devices](https://github.com/AJuna345/snake-app/milestone/4)
       - Closed Issues
           - Add touch screen support for mobile devices
           - Start Game/New Game buttons cannot be clicked
