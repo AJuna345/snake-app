@@ -47,7 +47,7 @@ I ran into several problems while working on this project. I wanted to add icons
 
 I had to research event timers to learn how to make the power-ups only last for 10 seconds. I was able to get the dashboard to show the current power-up, but it took me a while to figure out how to clear it after the power-up wore off.
 
-Making the game work on my cell phone and tablet was hard. I put arrow icons in the original game, but they didn't work well. I wanted to just touch the screen to change the snake's direction, but I couldn't get it to work the way I wanted. I had to look for more examples and ask Google AI for help to fix the problems. My dashboard is too large for mobile devices, and I had to press the Start Game button and scroll up quickly to play. I didn't have enough time to fix it before the assignment was due, so I moved the Start Game button up to the top to make it work.
+Making the game work on my cell phone and tablet was hard. I added arrow icons to the original game, but they were hard to use. I wanted to just touch the screen to change the snake's direction, but I couldn't get it to work the way I wanted. I had to look for more examples and ask Google AI for help to fix the problems. My dashboard is too large for mobile devices, and I had to press the Start Game button and scroll up quickly to play. I didn't have enough time to fix it before the assignment was due, so I moved the Start Game button up to the top to make it work.
 
 ## Attribution
 
