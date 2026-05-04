@@ -32,7 +32,7 @@ Game and user interface enhancements by **Aiden (A.J.) Ramsden**
 
 ## Narrative
 *What the app does*<br>
-UNcaffeinated - Solid Snake is an enhanced version of the classic Snake game. I tried to update it with a clean, modern look and a dashboard that tracks player stats in real-time. It supports different color themes and a leaderboard that ranks the game's best Snake Wranglers.
+UNcaffeinated - Solid Snake is an enhanced version of the classic Snake game. I tried to update it with a clean, modern look and a dashboard that tracks player scores and power-ups in real-time. It supports different color themes and a leaderboard that ranks the game's top Snake Wranglers.
 
 *Why I chose it*<br>
 The classic snake game is very simple and gets boring quickly, so I wanted to make it more fun and challenging.
