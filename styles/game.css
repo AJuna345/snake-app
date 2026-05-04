@@ -137,8 +137,14 @@ body.theme-neon #game-board canvas {
     transition: opacity 0.3s ease;
 }
 
-.hidden {
-    display: none !important;
+.overlay-start {
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+}
+
+.overlay-gameover {
+    background-color: rgba(255, 0, 0, 0.2);
+    backdrop-filter: blur(6px);
 }
 
 /* --- Modal & Input Styling --- */
@@ -168,6 +174,38 @@ body.theme-neon #game-board canvas {
     color: var(--bg-color);
 }
 
+/* --- NO INLINE STYLE FIXES --- */
+.bg-canvas {
+    background-color: var(--canvas-bg) !important;
+}
+
+.bg-theme {
+    background-color: var(--bg-color) !important;
+}
+
+.text-theme {
+    color: var(--text-color) !important;
+}
+
+.border-theme {
+    border-color: var(--border-color) !important;
+}
+
+.btn-primary-custom {
+    background-color: var(--snake-color) !important;
+    color: var(--canvas-bg) !important;
+}
+
+.btn-outline-thin {
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-color) !important;
+    background-color: transparent !important;
+}
+
+.modal-footer-custom {
+    background-color: var(--bg-color) !important;
+}
+
 /* --- Mobile Controls Styling --- */
 /* Hide on Desktop */
 @media (min-width: 992px) {
@@ -194,7 +232,6 @@ body.theme-neon #game-board canvas {
 
 /* --- Landscape Mobile Fix --- */
 @media (max-width: 991px) and (orientation: landscape) {
-    /* Turn the main right column into a flex row */
     .col-lg-9 {
         display: flex;
         flex-direction: row;
@@ -202,19 +239,16 @@ body.theme-neon #game-board canvas {
         gap: 15px;
     }
     
-    /* Allow the game board card to take up the remaining space */
     .col-lg-9 > .card {
         flex: 1;
         margin-bottom: 0 !important;
     }
 
-    /* Move the D-Pad next to the board and prevent it from shrinking */
     #mobileControls {
         margin-top: 0 !important;
         flex-shrink: 0;
     }
 
-    /* Ensure the canvas height doesn't force a vertical scroll bar */
     #game-board canvas {
         max-height: 80vh;
         width: auto;
