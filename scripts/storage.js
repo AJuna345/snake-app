@@ -2,11 +2,11 @@
 // Save the high score and get them for the leaderboard
 
 export function getPlayerName() {
-  return localStorage.getItem('snakePlayerName') || '';
+  return sessionStorage.getItem('snakePlayerName') || '';
 }
 
 export function savePlayerName(name) {
-  localStorage.setItem('snakePlayerName', name);
+  sessionStorage.setItem('snakePlayerName', name);
 }
 
 export function getTheme() {
